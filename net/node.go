@@ -11,6 +11,7 @@ import (
 	"github.com/libp2p/go-libp2p-net"
 	"fmt"
 	"github.com/multiformats/go-multiaddr"
+	"github.com/eager7/lib-p2p/common/utils"
 )
 
 var log = mlog.L
@@ -50,6 +51,8 @@ func InitNetwork(ctx context.Context, address, port string ) {
 	err = h.Network().Listen([]multiaddr.Multiaddr{mAddr}...)
 	errors.CheckErrorPanic(err)
 	log.Debug(h.Network().InterfaceListenAddresses())
+
+	utils.Pause()
 }
 
 func networkHandler(s net.Stream) {
