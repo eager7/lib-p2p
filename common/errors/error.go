@@ -1,23 +1,23 @@
 package errors
 
 import (
-	"github.com/eager7/go/mlog"
 	"errors"
+	"runtime/debug"
 )
 
-func New(log mlog.Logger, err string) error {
-	log.ErrStack()
+func New(err string) error {
+	debug.PrintStack()
 	return errors.New(err)
 }
 
 func CheckErrorPanic(err error) {
 	if err != nil {
-		mlog.L.Panic(err)
+		panic(err)
 	}
 }
 
 func CheckEqualPanic(b bool) {
 	if !b {
-		mlog.L.Panic("not equal")
+		panic("not equal")
 	}
 }

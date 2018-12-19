@@ -1,0 +1,13 @@
+syntax = "proto3";
+package pnet;
+
+enum MsgType {
+    MSG_ZERO        = 0;
+    MSG_STRING      = 1;
+    MSG_NUMBER      = 2;
+}
+
+message Message {
+    MsgType Type    = 1;
+    bytes Payload   = 2;
+}
