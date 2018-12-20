@@ -26,39 +26,36 @@ const (
 	sendMessageTimeout = time.Minute * 10
 )
 
-type PeerInfo struct {
-	s         net.Stream
-	MultiAddr multiaddr.Multiaddr
-	PublicKey string
-}
-
 type Instance struct {
 	ctx     context.Context
 	Host    host.Host
 	ID      peer.ID
 	Address string
 	Port    string
-	Peers   map[peer.ID]PeerInfo
+	Peers   PeerMap
 	lock    sync.RWMutex
 }
 
 func New(ctx context.Context, b64Pri, address, port string) (*Instance, error) {
 	i := new(Instance)
-	if err := i.Init(ctx, b64Pri, address, port); err != nil {
+	if err := i.initialize(ctx, b64Pri, address, port); err != nil {
 		return nil, err
 	}
 	return i, nil
 }
 
-func (i *Instance) Init(ctx context.Context, b64Pri, address, port string) error {
-	i.Peers = make(map[peer.ID]PeerInfo, 0)
+func (i *Instance) initialize(ctx context.Context, b64Pri, address, port string) error {
+	i.Peers.Initialize()
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	i.ctx = ctx
 	i.Address = address
 	i.Port = port
-	return i.InitNetwork(b64Pri)
+	return i.initNetwork(b64Pri)
 }
 
-func (i *Instance) InitNetwork(b64Pri string) (err error) {
+func (i *Instance) initNetwork(b64Pri string) (err error) {
 	var private crypto.PrivKey
 	var public crypto.PubKey
 	if b64Pri == "" {
@@ -94,9 +91,6 @@ func (i *Instance) InitNetwork(b64Pri string) (err error) {
 	ps.AddPubKey(i.ID, private.GetPublic())
 	options = append(options, libp2p.Peerstore(ps))
 
-	if i.ctx == nil {
-		i.ctx = context.Background()
-	}
 	i.Host, err = libp2p.New(i.ctx, options...)
 	if err != nil {
 		return err
@@ -105,17 +99,14 @@ func (i *Instance) InitNetwork(b64Pri string) (err error) {
 	i.Host.SetStreamHandler(Protocol, i.NetworkHandler)
 	//h.Network().Notify()
 
-	addr := fmt.Sprintf("/ip4/%s/tcp/%s", i.Address, i.Port)
-	mAddr, err := multiaddr.NewMultiaddr(addr)
+	mAddr, err := multiaddr.NewMultiaddr(NewAddrInfo(i.Address, i.Port))
 	if err != nil {
 		return err
 	}
-
 	err = i.Host.Network().Listen([]multiaddr.Multiaddr{mAddr}...)
 	if err != nil {
 		return err
 	}
-
 	log.Debug(i.Host.Network().InterfaceListenAddresses())
 
 	hostAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", i.Host.ID().Pretty()))
@@ -128,7 +119,7 @@ func (i *Instance) InitNetwork(b64Pri string) (err error) {
 		}
 	}
 	fullAddr := addrM.Encapsulate(hostAddr)
-	log.Debug("I am ", fullAddr)
+	log.Debug("I am ", fullAddr, i.Host.Peerstore().Addrs(i.ID))
 	return nil
 }
 
@@ -141,7 +132,7 @@ func (i *Instance) NetworkHandler(s net.Stream) {
 		log.Warn(err)
 		return
 	}
-	i.PeerAdd(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr(), crypto.ConfigEncodeKey(pub))
+	i.Peers.Add(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr(), crypto.ConfigEncodeKey(pub))
 
 	go i.ReceiveMessage(s)
 }
@@ -155,13 +146,34 @@ func (i *Instance) ConnectPeer(b64Pub, address, port string) (net.Stream, error)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
+	log.Warn(addr)
 	i.Host.Peerstore().AddAddr(id, addr, peerstore.PermanentAddrTTL)
 	s, err := i.Host.NewStream(i.ctx, id, Protocol)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	i.PeerAdd(id, s, addr, b64Pub)
+	i.Peers.Add(id, s, addr, b64Pub)
 	return s, nil
+}
+
+/**
+ *  @brief 建立和对端的连接，这个函数会调用Dial函数拨号，可以节省ConnectPeer函数执行时间，因为如果已经拨号成功，那么创建流时就不需要再次拨号，因此此函数可以作为ping函数使用，实时去刷新和节点间的连接
+ *  @param b64Pub - the public key
+ *  @param address - the address of ip
+ *  @param port - the port of ip
+ */
+func (i *Instance) Connect(b64Pub, address, port string) error {
+	id, err := IdFromPublicKey(b64Pub)
+	if err != nil {
+		return err
+	}
+	addr, err := multiaddr.NewMultiaddr(NewAddrInfo(address, port))
+	if err != nil {
+		return errors.New(err.Error())
+	}
+	pi := peerstore.PeerInfo{ID: id, Addrs: []multiaddr.Multiaddr{addr}}
+	log.Warn(peerstore.InfoToP2pAddrs(&pi))
+	return i.Host.Connect(i.ctx, pi)
 }
 
 func (i *Instance) ReceiveMessage(s net.Stream) {
@@ -171,8 +183,8 @@ func (i *Instance) ReceiveMessage(s net.Stream) {
 		err := reader.ReadMsg(msg)
 		if err != nil {
 			s.Reset()
-			i.PeerDel(s.Conn().RemotePeer())
-			log.Warn("the peer ", s.Conn().RemotePeer().Pretty(), "is disconnected:", err)
+			i.Peers.Del(s.Conn().RemotePeer())
+			log.Warn("the peer ", s.Conn().RemotePeer().Pretty(), i.Host.Peerstore().Addrs(s.Conn().RemotePeer()), "is disconnected:", err)
 			return
 		}
 		log.Info("receive msg:", msg.String())
@@ -185,9 +197,9 @@ func (i *Instance) SendMessage(b64Pub string, message *pnet.Message) error {
 		return errors.New(err.Error())
 	}
 	var s net.Stream
-	info := i.PeerGet(id)
+	info := i.Peers.Get(id)
 	if info == nil {
-		return errors.New(fmt.Sprintf("the peer %s is not connect", id.Pretty()))
+		return errors.New(fmt.Sprintf("the peer %s-%s is not connect", id.Pretty(), i.Host.Peerstore().Addrs(id)))
 	} else {
 		s = info.s
 	}
@@ -213,39 +225,11 @@ func (i *Instance) SendMessage(b64Pub string, message *pnet.Message) error {
 	return nil
 }
 
-func (i *Instance) PeerAdd(id peer.ID, s net.Stream, addr multiaddr.Multiaddr, b64Pub string) {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-	if _, ok := i.Peers[id]; ok {
-		return
-	}
-	i.Peers[id] = PeerInfo{s: s, MultiAddr: addr, PublicKey: b64Pub}
-}
-
-func (i *Instance) PeerGet(id peer.ID) *PeerInfo {
-	i.lock.RLock()
-	defer i.lock.RUnlock()
-	if info, ok := i.Peers[id]; ok {
-		return &info
-	}
-	return nil
-}
-
-func (i *Instance) PeerDel(id peer.ID) error {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-	if _, ok := i.Peers[id]; ok {
-		delete(i.Peers, id)
-		return nil
-	}
-	return errors.New(fmt.Sprintf("can't find stream by id:%s", id))
-}
-
 func (i *Instance) ResetStream(s net.Stream) error {
 	id := s.Conn().RemotePeer()
 	if err := s.Reset(); err != nil {
 		return err
 	}
-	i.PeerDel(id)
+	i.Peers.Del(id)
 	return nil
 }

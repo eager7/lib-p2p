@@ -29,16 +29,33 @@ func TestSend(t *testing.T) {
 	n, err := net.New(context.Background(), priKey2, "127.0.0.1", "9002")
 	CheckErrorPanic(err)
 
-	s, err := n.ConnectPeer(pubKey1, "127.0.0.1", "9001")
-	CheckErrorPanic(err)
-	for i := 0; i < 10; i++ {
-		CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", i))}))
+	for j := 0; j < 0; j ++ {
+		start := time.Now()
+		_, err := n.ConnectPeer(pubKey1, "127.0.0.1", "9001")
+		end := time.Now()
+		fmt.Printf("longCalculation took this amount of time: %s\n", end.Sub(start))
+		CheckErrorPanic(err)
+		for i := 0; i < 10; i++ {
+			CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", i))}))
+		}
+		//n.ResetStream(s)
+		time.Sleep(time.Millisecond * 100)
+		CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", 0))}))
 	}
-	n.ResetStream(s)
-	time.Sleep(time.Millisecond * 100)
-	CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", 0))}))
 
-	utils.Pause()
+	if true {
+		err := n.Connect(pubKey1, "127.0.0.1", "9001")
+		CheckErrorPanic(err)
+
+		start := time.Now()
+		_, err = n.ConnectPeer(pubKey1, "127.0.0.1", "9001")
+		end := time.Now()
+		fmt.Printf("longCalculation took this amount of time: %s\n", end.Sub(start))
+		CheckErrorPanic(err)
+		CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", 0))}))
+	}
+
+	//utils.Pause()
 }
 
 func CheckErrorPanic(err error) {
