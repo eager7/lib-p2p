@@ -53,3 +53,16 @@ func (p *PeerMap) Get(id peer.ID) *Peer {
 	}
 	return nil
 }
+
+func (p *PeerMap) Iterator() <-chan Peer {
+	channel := make(chan Peer)
+	go func() {
+		p.lock.RLock()
+		defer p.lock.RUnlock()
+		for _, v := range p.Peers {
+			channel <- v
+		}
+		close(channel)
+	}()
+	return channel
+}
