@@ -97,7 +97,7 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 	}
 
 	i.Host.SetStreamHandler(Protocol, i.NetworkHandler)
-	//h.Network().Notify()
+	i.Host.Network().Notify(i)
 
 	mAddr, err := multiaddr.NewMultiaddr(NewAddrInfo(i.Address, i.Port))
 	if err != nil {
@@ -233,3 +233,4 @@ func (i *Instance) ResetStream(s net.Stream) error {
 	i.Peers.Del(id)
 	return nil
 }
+
