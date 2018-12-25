@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/eager7/go/elog"
-	"github.com/eager7/lib-p2p/common/utils"
 	"github.com/eager7/lib-p2p/message"
 	"github.com/eager7/lib-p2p/net"
 	"os"
 	"testing"
 	"time"
+	"github.com/eager7/lib-p2p/common/utils"
 )
 
 const (
@@ -19,43 +19,35 @@ const (
 	pubKey2 = "CAASogEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJXs/ovug1g4gu43I08QiyUSN9E4SSuWqFNe4qYNn6x6PhTTVDW1yatb8uE3aaFB+Jm9Pyh3eADQ9y8EFK9XN5fwJp7y3szeD/xl0HtiNk1xJKmRX+njEPZ3F6XMAL6wA6FFlif6FI9wj4bci0pk4g5xi28vQ6XBO50G71YUIhbfAgMBAAE="
 )
 
-func TestServer(t *testing.T) {
-	_, err := net.New(context.Background(), priKey1, "127.0.0.1", "9001")
+func TestNode1(t *testing.T) {
+	n, err := net.New(context.Background(), priKey1, "127.0.0.1", "9001")
 	CheckErrorPanic(err)
+
+	for i := 0; i < 5; i++ {
+		fmt.Println("wait...")
+		time.Sleep(time.Second * 1)
+	}
+	_, err = n.StreamConnect(pubKey2, "127.0.0.1", "9002")
+	CheckErrorPanic(err)
+	for i := 0; i < 10; {
+		CheckErrorPanic(n.SendMessage(pubKey2, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", i))}))
+	}
 	utils.Pause()
 }
 
-func TestSend(t *testing.T) {
+func TestNode2(t *testing.T) {
 	n, err := net.New(context.Background(), priKey2, "127.0.0.1", "9002")
 	CheckErrorPanic(err)
 
-	for j := 0; j < 0; j ++ {
-		start := time.Now()
-		_, err := n.ConnectPeer(pubKey1, "127.0.0.1", "9001")
-		end := time.Now()
-		fmt.Printf("longCalculation took this amount of time: %s\n", end.Sub(start))
-		CheckErrorPanic(err)
-		for i := 0; i < 10; i++ {
-			CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", i))}))
-		}
-		//n.ResetStream(s)
-		time.Sleep(time.Millisecond * 100)
-		CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", 0))}))
+	for i := 0; i < 5; i++ {
+		fmt.Println("wait...")
+		time.Sleep(time.Second * 1)
 	}
-
-	if true {
-		err := n.Connect(pubKey1, "127.0.0.1", "9001")
-		CheckErrorPanic(err)
-
-		start := time.Now()
-		_, err = n.ConnectPeer(pubKey1, "127.0.0.1", "9001")
-		end := time.Now()
-		fmt.Printf("longCalculation took this amount of time: %s\n", end.Sub(start))
-		CheckErrorPanic(err)
-		CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("test message:%d", 0))}))
+	_, err = n.StreamConnect(pubKey1, "127.0.0.1", "9001")
+	CheckErrorPanic(err)
+	for i := 0; i < 10; {
+		CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", i))}))
 	}
-
-	//utils.Pause()
 }
 
 func CheckErrorPanic(err error) {

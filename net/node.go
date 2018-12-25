@@ -137,7 +137,7 @@ func (i *Instance) NetworkHandler(s net.Stream) {
 	go i.ReceiveMessage(s)
 }
 
-func (i *Instance) ConnectPeer(b64Pub, address, port string) (net.Stream, error) {
+func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, error) {
 	id, err := IdFromPublicKey(b64Pub)
 	if err != nil {
 		return nil, err
@@ -172,8 +172,11 @@ func (i *Instance) Connect(b64Pub, address, port string) error {
 		return errors.New(err.Error())
 	}
 	pi := peerstore.PeerInfo{ID: id, Addrs: []multiaddr.Multiaddr{addr}}
-	log.Warn(peerstore.InfoToP2pAddrs(&pi))
-	return i.Host.Connect(i.ctx, pi)
+	if err := i.Host.Connect(i.ctx, pi); err != nil {
+		return errors.New(err.Error())
+	}
+	//i.Peers.Add(id, nil, addr, b64Pub)
+	return nil
 }
 
 func (i *Instance) ReceiveMessage(s net.Stream) {

@@ -19,6 +19,7 @@ type Peer struct {
 
 type PeerMap struct {
 	Peers map[peer.ID]Peer
+	P sync.Map
 	lock  sync.RWMutex
 }
 
