@@ -125,34 +125,35 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 
 //每个连接只会触发一次这个回调函数，之后需要在线程中做收发
 func (i *Instance) NetworkHandler(s net.Stream) {
-	log.Debug("receive msg from:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr(), "| topic is:", s.Protocol())
-
-	pub, err := s.Conn().RemotePublicKey().Bytes()
-	if err != nil {
-		log.Warn(err)
-		return
-	}
-	i.Peers.Add(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr(), crypto.ConfigEncodeKey(pub))
+	log.Debug("create connect and receive msg from:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr(), "| topic is:", s.Protocol(), s)
+	i.Peers.Add(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr())
 
 	go i.ReceiveMessage(s)
 }
 
 func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, error) {
+	log.Info("connect to:", address, port)
 	id, err := IdFromPublicKey(b64Pub)
 	if err != nil {
 		return nil, err
 	}
+	if p := i.Peers.Get(id); p != nil {
+		log.Warn("the stream is created:", p.s)
+		return p.s, nil
+	}
+
 	addr, err := multiaddr.NewMultiaddr(NewAddrInfo(address, port))
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	log.Warn(addr)
 	i.Host.Peerstore().AddAddr(id, addr, peerstore.PermanentAddrTTL)
 	s, err := i.Host.NewStream(i.ctx, id, Protocol)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	i.Peers.Add(id, s, addr, b64Pub)
+	log.Info("add stream:", s)
+	i.Peers.Add(id, s, addr)
+	go i.ReceiveMessage(s)
 	return s, nil
 }
 
@@ -180,14 +181,15 @@ func (i *Instance) Connect(b64Pub, address, port string) error {
 }
 
 func (i *Instance) ReceiveMessage(s net.Stream) {
+	log.Debug("start receive thread")
 	reader := io.NewDelimitedReader(s, net.MessageSizeMax)
 	for {
 		msg := new(pnet.Message)
 		err := reader.ReadMsg(msg)
 		if err != nil {
+			log.Error("the peer ", s.Conn().RemotePeer().Pretty(), i.Host.Peerstore().Addrs(s.Conn().RemotePeer()), "is disconnected:", err)
 			s.Reset()
 			i.Peers.Del(s.Conn().RemotePeer())
-			log.Warn("the peer ", s.Conn().RemotePeer().Pretty(), i.Host.Peerstore().Addrs(s.Conn().RemotePeer()), "is disconnected:", err)
 			return
 		}
 		log.Info("receive msg:", msg.String())
@@ -236,4 +238,3 @@ func (i *Instance) ResetStream(s net.Stream) error {
 	i.Peers.Del(id)
 	return nil
 }
-

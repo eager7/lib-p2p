@@ -10,11 +10,11 @@ import (
 func TestPeerMap_Iterator(t *testing.T) {
 	p := new(net.PeerMap)
 	p.Initialize()
-	p.Add(peer.ID("test1"), nil, nil, "test1")
-	p.Add(peer.ID("test2"), nil, nil, "test2")
-	p.Add(peer.ID("test3"), nil, nil, "test3")
-	p.Add(peer.ID("test4"), nil, nil, "test4")
-	p.Add(peer.ID("test5"), nil, nil, "test5")
+	p.Add(peer.ID("test1"), nil, nil)
+	p.Add(peer.ID("test2"), nil, nil)
+	p.Add(peer.ID("test3"), nil, nil)
+	p.Add(peer.ID("test4"), nil, nil)
+	p.Add(peer.ID("test5"), nil, nil)
 
 	fmt.Println(p)
 

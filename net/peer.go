@@ -14,7 +14,6 @@ type Peer struct {
 	ID        peer.ID
 	s         net.Stream
 	PeerInfo  peerstore.PeerInfo
-	PublicKey string
 }
 
 type PeerMap struct {
@@ -27,14 +26,14 @@ func (p *PeerMap) Initialize() {
 	p.Peers = make(map[peer.ID]Peer)
 }
 
-func (p *PeerMap) Add(id peer.ID, s net.Stream, addr multiaddr.Multiaddr, b64Pub string) {
+func (p *PeerMap) Add(id peer.ID, s net.Stream, addr multiaddr.Multiaddr) {
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	if _, ok := p.Peers[id]; ok {
 		return
 	}
 	peerInfo := peerstore.PeerInfo{ID: id, Addrs: []multiaddr.Multiaddr{addr}}
-	p.Peers[id] = Peer{ID: id, s: s, PeerInfo: peerInfo, PublicKey: b64Pub}
+	p.Peers[id] = Peer{ID: id, s: s, PeerInfo: peerInfo}
 }
 
 func (p *PeerMap) Del(id peer.ID) error {

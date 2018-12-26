@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/eager7/go/elog"
-	"github.com/eager7/lib-p2p/message"
 	"github.com/eager7/lib-p2p/net"
 	"os"
 	"testing"
@@ -23,14 +22,14 @@ func TestNode1(t *testing.T) {
 	n, err := net.New(context.Background(), priKey1, "127.0.0.1", "9001")
 	CheckErrorPanic(err)
 
-	for i := 0; i < 5; i++ {
-		fmt.Println("wait...")
-		time.Sleep(time.Second * 1)
-	}
-	_, err = n.StreamConnect(pubKey2, "127.0.0.1", "9002")
-	CheckErrorPanic(err)
-	for i := 0; i < 10; {
-		CheckErrorPanic(n.SendMessage(pubKey2, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", i))}))
+	fmt.Println("wait...")
+	time.Sleep(time.Second * 3)
+
+
+	for i := 0; i < 1000; i++{
+		_, err = n.StreamConnect(pubKey2, "127.0.0.1", "9002")
+		CheckErrorPanic(err)
+		//CheckErrorPanic(n.SendMessage(pubKey2, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", i))}))
 	}
 	utils.Pause()
 }
@@ -39,15 +38,16 @@ func TestNode2(t *testing.T) {
 	n, err := net.New(context.Background(), priKey2, "127.0.0.1", "9002")
 	CheckErrorPanic(err)
 
-	for i := 0; i < 5; i++ {
-		fmt.Println("wait...")
-		time.Sleep(time.Second * 1)
+	fmt.Println("wait...")
+	time.Sleep(time.Second * 3)
+
+
+	for i := 0; i < 1000; i++{
+		_, err = n.StreamConnect(pubKey1, "127.0.0.1", "9001")
+		CheckErrorPanic(err)
+		//CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", i))}))
 	}
-	_, err = n.StreamConnect(pubKey1, "127.0.0.1", "9001")
-	CheckErrorPanic(err)
-	for i := 0; i < 10; {
-		CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", i))}))
-	}
+	utils.Pause()
 }
 
 func CheckErrorPanic(err error) {
