@@ -26,7 +26,7 @@ func TestNode1(t *testing.T) {
 	time.Sleep(time.Second * 3)
 
 
-	for i := 0; i < 1000; i++{
+	for i := 0; i < 1; i++{
 		_, err = n.StreamConnect(pubKey2, "127.0.0.1", "9002")
 		CheckErrorPanic(err)
 		//CheckErrorPanic(n.SendMessage(pubKey2, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", i))}))
@@ -42,7 +42,7 @@ func TestNode2(t *testing.T) {
 	time.Sleep(time.Second * 3)
 
 
-	for i := 0; i < 1000; i++{
+	for i := 0; i < 1; i++{
 		_, err = n.StreamConnect(pubKey1, "127.0.0.1", "9001")
 		CheckErrorPanic(err)
 		//CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", i))}))

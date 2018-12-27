@@ -32,8 +32,8 @@ func (p *PeerMap) Add(id peer.ID, s net.Stream, addr multiaddr.Multiaddr) {
 	if _, ok := p.Peers[id]; ok {
 		return
 	}
-	peerInfo := peerstore.PeerInfo{ID: id, Addrs: []multiaddr.Multiaddr{addr}}
-	p.Peers[id] = Peer{ID: id, s: s, PeerInfo: peerInfo}
+	//peerInfo := peerstore.PeerInfo{ID: id, Addrs: []multiaddr.Multiaddr{addr}}
+	//p.Peers[id] = Peer{ID: id, s: s, PeerInfo: peerInfo}
 }
 
 func (p *PeerMap) Del(id peer.ID) error {

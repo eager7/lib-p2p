@@ -125,7 +125,7 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 
 //每个连接只会触发一次这个回调函数，之后需要在线程中做收发
 func (i *Instance) NetworkHandler(s net.Stream) {
-	log.Debug("create connect and receive msg from:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr(), "| topic is:", s.Protocol(), s)
+	log.Debug("receive connect peer from:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr(), "| topic is:", s.Protocol(), s)
 	i.Peers.Add(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr())
 
 	go i.ReceiveMessage(s)
@@ -153,7 +153,7 @@ func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, erro
 	}
 	log.Info("add stream:", s)
 	i.Peers.Add(id, s, addr)
-	go i.ReceiveMessage(s)
+	//go i.ReceiveMessage(s)
 	return s, nil
 }
 
