@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/eager7/go/elog"
+	"github.com/eager7/lib-p2p/common/utils"
+	"github.com/eager7/lib-p2p/message"
 	"github.com/eager7/lib-p2p/net"
 	"os"
 	"testing"
 	"time"
-	"github.com/eager7/lib-p2p/common/utils"
 )
 
 const (
@@ -25,13 +26,8 @@ func TestNode1(t *testing.T) {
 	fmt.Println("wait...")
 	time.Sleep(time.Second * 3)
 
-
-	 {
-		s, err := n.StreamConnect(pubKey2, "0.0.0.0", "9002")
-		CheckErrorPanic(err)
-		fmt.Println("create stream:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr())
-		//s.Close()
-		//CheckErrorPanic(n.SendMessage(pubKey2, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", i))}))
+	for{
+		CheckErrorPanic(n.SendMessage(pubKey2, "0.0.0.0", "9002", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", 9001))}))
 	}
 	utils.Pause()
 }
@@ -43,14 +39,8 @@ func TestNode2(t *testing.T) {
 	fmt.Println("wait...")
 	time.Sleep(time.Second * 3)
 
-
-	 {
-		 time.Sleep(time.Second * 3)
-		 s, err := n.StreamConnect(pubKey1, "0.0.0.0", "9001")
-		CheckErrorPanic(err)
-		fmt.Println("create stream:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr())
-		//s.Close()
-		//CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", i))}))
+	for{
+		CheckErrorPanic(n.SendMessage(pubKey1, "0.0.0.0", "9001", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", 9002))}))
 	}
 	utils.Pause()
 }

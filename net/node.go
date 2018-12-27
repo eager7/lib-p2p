@@ -214,7 +214,7 @@ func (i *Instance) ReceiveMessage(s net.Stream) {
 	}
 }
 
-func (i *Instance) SendMessage(b64Pub string, message *pnet.Message) error {
+func (i *Instance) SendMessage(b64Pub, address, port string, message *pnet.Message) error {
 	id, err := IdFromPublicKey(b64Pub)
 	if err != nil {
 		return errors.New(err.Error())
@@ -222,7 +222,9 @@ func (i *Instance) SendMessage(b64Pub string, message *pnet.Message) error {
 	var s net.Stream
 	info := i.Peers.Get(id)
 	if info == nil {
-		return errors.New(fmt.Sprintf("the peer %s-%s is not connect", id.Pretty(), i.Host.Peerstore().Addrs(id)))
+		if s, err = i.StreamConnect(b64Pub, address, port); err != nil {
+			return err
+		}
 	} else {
 		s = info.s
 	}
