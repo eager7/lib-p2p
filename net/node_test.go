@@ -19,7 +19,7 @@ const (
 )
 
 func TestNode1(t *testing.T) {
-	n, err := net.New(context.Background(), priKey1, "127.0.0.1", "9001")
+	n, err := net.New(context.Background(), priKey1, "0.0.0.0", "9001")
 	CheckErrorPanic(err)
 
 	fmt.Println("wait...")
@@ -27,7 +27,7 @@ func TestNode1(t *testing.T) {
 
 
 	 {
-		s, err := n.StreamConnect(pubKey2, "127.0.0.1", "9002")
+		s, err := n.StreamConnect(pubKey2, "0.0.0.0", "9002")
 		CheckErrorPanic(err)
 		fmt.Println("create stream:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr())
 		//s.Close()
@@ -37,7 +37,7 @@ func TestNode1(t *testing.T) {
 }
 
 func TestNode2(t *testing.T) {
-	n, err := net.New(context.Background(), priKey2, "127.0.0.1", "9002")
+	n, err := net.New(context.Background(), priKey2, "0.0.0.0", "9002")
 	CheckErrorPanic(err)
 
 	fmt.Println("wait...")
@@ -46,7 +46,7 @@ func TestNode2(t *testing.T) {
 
 	 {
 		 time.Sleep(time.Second * 3)
-		 s, err := n.StreamConnect(pubKey1, "127.0.0.1", "9001")
+		 s, err := n.StreamConnect(pubKey1, "0.0.0.0", "9001")
 		CheckErrorPanic(err)
 		fmt.Println("create stream:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr())
 		//s.Close()
