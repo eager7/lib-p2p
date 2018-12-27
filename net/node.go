@@ -6,17 +6,19 @@ import (
 	"github.com/eager7/go/elog"
 	"github.com/eager7/lib-p2p/common/errors"
 	"github.com/eager7/lib-p2p/message"
-	"github.com/gogo/protobuf/io"
-	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p-crypto"
-	"github.com/libp2p/go-libp2p-host"
-	"github.com/libp2p/go-libp2p-net"
-	"github.com/libp2p/go-libp2p-peer"
-	"github.com/libp2p/go-libp2p-peerstore"
-	"github.com/multiformats/go-multiaddr"
+
 	"strings"
 	"sync"
 	"time"
+	"gx/ipfs/Qmb8T6YBBsjYsVGfrihQLfCJveczZnneSBqBKkYEBWDjge/go-libp2p-host"
+	"gx/ipfs/QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN/go-libp2p-peer"
+	"gx/ipfs/Qme1knMqwt1hKZbc1BmQFmnm9f36nyQGwXxPGVpVJ9rMK5/go-libp2p-crypto"
+	"gx/ipfs/QmY51bqSM5XgxQZqsBrQcRkKTnCb8EKpJpR9K6Qax7Njco/go-libp2p"
+	"gx/ipfs/QmZR2XWVVBCtbgBWnQhWk2xcQfaR3W8faQPriAiaaj7rsr/go-libp2p-peerstore"
+	"gx/ipfs/QmYmsdtJ3HsodkePE3eU3TsCaP2YvPZJ4LoXnNkDE5Tpt7/go-multiaddr"
+	"gx/ipfs/QmPjvxTpVH8qJyQDnxnsxF9kv9jezKD1kozz1hs3fCGsNh/go-libp2p-net"
+	"gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/io"
+	"gx/ipfs/QmYAL9JsqVVPFWwM1ZzHNsofmTzRYQHJ2KqQaBmFJjJsNx/go-libp2p-connmgr"
 )
 
 var log = elog.Log
@@ -86,9 +88,22 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 
 	var options []libp2p.Option
 	options = append(options, libp2p.Identity(private))
+
+	period := time.Duration(20) * time.Second
+	grace, err := time.ParseDuration(period.String())
+	if err != nil {
+		return errors.New(err.Error())
+	}
+	mgr := connmgr.NewConnManager(600, 900, grace)
+	options = append(options, libp2p.ConnectionManager(mgr))
+
 	ps := peerstore.NewPeerstore()
-	ps.AddPrivKey(i.ID, private)
-	ps.AddPubKey(i.ID, private.GetPublic())
+	if err := ps.AddPrivKey(i.ID, private); err != nil {
+		return errors.New(err.Error())
+	}
+	if err := ps.AddPubKey(i.ID, private.GetPublic()); err != nil {
+		return errors.New(err.Error())
+	}
 	options = append(options, libp2p.Peerstore(ps))
 
 	i.Host, err = libp2p.New(i.ctx, options...)
@@ -126,13 +141,12 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 //每个连接只会触发一次这个回调函数，之后需要在线程中做收发
 func (i *Instance) NetworkHandler(s net.Stream) {
 	log.Debug("receive connect peer from:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr(), "| topic is:", s.Protocol(), s)
-	i.Peers.Add(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr())
+	//i.Peers.Add(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr())
 
 	go i.ReceiveMessage(s)
 }
 
 func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, error) {
-	log.Info("connect to:", address, port)
 	id, err := IdFromPublicKey(b64Pub)
 	if err != nil {
 		return nil, err
@@ -147,6 +161,7 @@ func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, erro
 		return nil, errors.New(err.Error())
 	}
 	i.Host.Peerstore().AddAddr(id, addr, peerstore.PermanentAddrTTL)
+	log.Info("create new stream:", id.Pretty(), address, port)
 	s, err := i.Host.NewStream(i.ctx, id, Protocol)
 	if err != nil {
 		return nil, errors.New(err.Error())

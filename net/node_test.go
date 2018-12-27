@@ -26,9 +26,11 @@ func TestNode1(t *testing.T) {
 	time.Sleep(time.Second * 3)
 
 
-	for i := 0; i < 1; i++{
-		_, err = n.StreamConnect(pubKey2, "127.0.0.1", "9002")
+	 {
+		s, err := n.StreamConnect(pubKey2, "127.0.0.1", "9002")
 		CheckErrorPanic(err)
+		fmt.Println("create stream:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr())
+		//s.Close()
 		//CheckErrorPanic(n.SendMessage(pubKey2, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", i))}))
 	}
 	utils.Pause()
@@ -42,9 +44,12 @@ func TestNode2(t *testing.T) {
 	time.Sleep(time.Second * 3)
 
 
-	for i := 0; i < 1; i++{
-		_, err = n.StreamConnect(pubKey1, "127.0.0.1", "9001")
+	 {
+		 time.Sleep(time.Second * 3)
+		 s, err := n.StreamConnect(pubKey1, "127.0.0.1", "9001")
 		CheckErrorPanic(err)
+		fmt.Println("create stream:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr())
+		//s.Close()
 		//CheckErrorPanic(n.SendMessage(pubKey1, &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", i))}))
 	}
 	utils.Pause()
