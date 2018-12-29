@@ -33,27 +33,25 @@ type Instance struct {
 	Host    host.Host
 	ID      peer.ID
 	Address string
-	Port    string
 	Peers   PeerMap
 	lock    sync.RWMutex
 }
 
-func New(ctx context.Context, b64Pri, address, port string) (*Instance, error) {
+func New(ctx context.Context, b64Pri, address string) (*Instance, error) {
 	i := new(Instance)
-	if err := i.initialize(ctx, b64Pri, address, port); err != nil {
+	if err := i.initialize(ctx, b64Pri, address); err != nil {
 		return nil, err
 	}
 	return i, nil
 }
 
-func (i *Instance) initialize(ctx context.Context, b64Pri, address, port string) error {
+func (i *Instance) initialize(ctx context.Context, b64Pri, address string) error {
 	i.Peers.Initialize()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	i.ctx = ctx
 	i.Address = address
-	i.Port = port
 	return i.initNetwork(b64Pri)
 }
 
@@ -114,7 +112,7 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 	i.Host.SetStreamHandler(Protocol, i.NetworkHandler)
 	i.Host.Network().Notify(i)
 
-	mAddr, err := multiaddr.NewMultiaddr(NewAddrInfo(i.Address, i.Port))
+	mAddr, err := multiaddr.NewMultiaddr(i.Address)
 	if err != nil {
 		return err
 	}

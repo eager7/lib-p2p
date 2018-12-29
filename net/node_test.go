@@ -20,27 +20,27 @@ const (
 )
 
 func TestNode1(t *testing.T) {
-	n, err := net.New(context.Background(), priKey1, "0.0.0.0", "9001")
+	n, err := net.New(context.Background(), priKey1, "/ip4/0.0.0.0/tcp/9011")
 	CheckErrorPanic(err)
 
 	fmt.Println("wait...")
 	time.Sleep(time.Second * 3)
 
-	for{
-		CheckErrorPanic(n.SendMessage(pubKey2, "0.0.0.0", "9002", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", 9001))}))
+	{
+		CheckErrorPanic(n.SendMessage(pubKey2, "0.0.0.0", "9012", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", 9001))}))
 	}
 	utils.Pause()
 }
 
 func TestNode2(t *testing.T) {
-	n, err := net.New(context.Background(), priKey2, "0.0.0.0", "9002")
+	n, err := net.New(context.Background(), priKey2, "/ip4/0.0.0.0/tcp/9012")
 	CheckErrorPanic(err)
 
 	fmt.Println("wait...")
 	time.Sleep(time.Second * 3)
 
-	for{
-		CheckErrorPanic(n.SendMessage(pubKey1, "0.0.0.0", "9001", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", 9002))}))
+	{
+		CheckErrorPanic(n.SendMessage(pubKey1, "0.0.0.0", "9011", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", 9002))}))
 	}
 	utils.Pause()
 }

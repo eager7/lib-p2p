@@ -2,9 +2,9 @@ package net_test
 
 import (
 	"testing"
-	"github.com/libp2p/go-libp2p-peer"
 	"fmt"
 	"github.com/eager7/lib-p2p/net"
+	"gx/ipfs/QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN/go-libp2p-peer"
 )
 
 func TestPeerMap_Iterator(t *testing.T) {
