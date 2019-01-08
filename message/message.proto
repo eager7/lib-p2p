@@ -1,13 +1,13 @@
 syntax = "proto3";
-package pnet;
+package mpb;
 
-enum MsgType {
+enum Identify {
     MSG_ZERO        = 0;
     MSG_STRING      = 1;
     MSG_NUMBER      = 2;
 }
 
 message Message {
-    MsgType Type    = 1;
-    bytes Payload   = 2;
+    Identify Identify   = 1;
+    bytes    Payload    = 2;
 }

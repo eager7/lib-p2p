@@ -97,7 +97,10 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 		return err
 	}
 
-	i.Host.SetStreamHandler(Protocol, i.NetworkHandler)
+	i.Host.SetStreamHandler(Protocol, func(stream net.Stream) {
+		log.Debug("receive stream from:", stream.Conn().RemotePeer().Pretty(), stream.Conn().RemoteMultiaddr(), "| topic is:", stream.Protocol())
+		go i.receive(stream)
+	})
 	i.Host.Network().Notify(i)
 	listen, err := i.Host.Network().InterfaceListenAddresses()
 	if err != nil {
@@ -118,11 +121,6 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 	return nil
 }
 
-func (i *Instance) NetworkHandler(s net.Stream) {
-	log.Debug("receive connect peer from:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr(), "| topic is:", s.Protocol(), s)
-	go i.ReceiveMessage(s)
-}
-
 func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, error) {
 	id, err := IdFromPublicKey(b64Pub)
 	if err != nil {
@@ -137,7 +135,6 @@ func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, erro
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
-	//i.Host.Peerstore().AddAddr(id, addr, peerstore.PermanentAddrTTL)
 	if len(i.Host.Peerstore().Addrs(id)) == 0 {
 		i.Host.Peerstore().AddAddr(id, addr, time.Minute*10)
 	}
@@ -148,7 +145,7 @@ func (i *Instance) StreamConnect(b64Pub, address, port string) (net.Stream, erro
 	}
 	log.Info("add stream:", s)
 	i.Peers.Add(id, s, addr)
-	//go i.ReceiveMessage(s)
+	//go i.receive(s)
 	return s, nil
 }
 
@@ -171,29 +168,26 @@ func (i *Instance) Connect(b64Pub, address, port string) error {
 	if err := i.Host.Connect(i.ctx, pi); err != nil {
 		return errors.New(err.Error())
 	}
-	//i.Peers.Add(id, nil, addr, b64Pub)
 	return nil
 }
 
-func (i *Instance) ReceiveMessage(s net.Stream) {
+func (i *Instance) receive(s net.Stream) {
 	log.Debug("start receive thread")
 	reader := io.NewDelimitedReader(s, net.MessageSizeMax)
 	for {
-		msg := new(pnet.Message)
-		err := reader.ReadMsg(msg)
-		if err != nil {
+		msg := new(mpb.Message)
+		if err := reader.ReadMsg(msg); err != nil {
 			log.Error("the peer ", s.Conn().RemotePeer().Pretty(), i.Host.Peerstore().Addrs(s.Conn().RemotePeer()), "is disconnected:", err)
 			if err := s.Reset(); err != nil {
 				log.Error(err)
 			}
-			i.Peers.Del(s.Conn().RemotePeer())
 			return
 		}
 		log.Info("receive msg:", msg.String())
 	}
 }
 
-func (i *Instance) SendMessage(b64Pub, address, port string, message *pnet.Message) error {
+func (i *Instance) SendMessage(b64Pub, address, port string, message *mpb.Message) error {
 	id, err := IdFromPublicKey(b64Pub)
 	if err != nil {
 		return errors.New(err.Error())
