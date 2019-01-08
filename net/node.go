@@ -31,12 +31,12 @@ type Instance struct {
 	ctx     context.Context
 	Host    host.Host
 	ID      peer.ID
-	Address string
+	Address []string
 	Peers   PeerMap
 	lock    sync.RWMutex
 }
 
-func NewInstance(ctx context.Context, b64Pri, address string) (*Instance, error) {
+func NewInstance(ctx context.Context, b64Pri string, address ...string) (*Instance, error) {
 	i := new(Instance)
 	i.Peers.Initialize()
 	if ctx == nil {
@@ -90,6 +90,7 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 		return errors.New(err.Error())
 	}
 	options = append(options, libp2p.Peerstore(ps))
+	options = append(options, libp2p.ListenAddrStrings(i.Address...))
 
 	i.Host, err = libp2p.New(i.ctx, options...)
 	if err != nil {
@@ -98,16 +99,11 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 
 	i.Host.SetStreamHandler(Protocol, i.NetworkHandler)
 	i.Host.Network().Notify(i)
-
-	mAddr, err := multiaddr.NewMultiaddr(i.Address)
+	listen, err := i.Host.Network().InterfaceListenAddresses()
 	if err != nil {
-		return err
+		log.Error(err)
 	}
-	err = i.Host.Network().Listen([]multiaddr.Multiaddr{mAddr}...)
-	if err != nil {
-		return err
-	}
-	log.Debug(i.Host.Network().InterfaceListenAddresses())
+	log.Debug("i am listen", listen)
 
 	hostAddr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ipfs/%s", i.Host.ID().Pretty()))
 	addresses := i.Host.Addrs()
@@ -118,16 +114,12 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 			break
 		}
 	}
-	fullAddr := addrM.Encapsulate(hostAddr)
-	log.Debug("I am ", fullAddr, i.Host.Peerstore().Addrs(i.ID))
+	log.Debug("self ipfs addr:", addrM.Encapsulate(hostAddr))
 	return nil
 }
 
-//每个连接只会触发一次这个回调函数，之后需要在线程中做收发
 func (i *Instance) NetworkHandler(s net.Stream) {
 	log.Debug("receive connect peer from:", s.Conn().RemotePeer().Pretty(), s.Conn().RemoteMultiaddr(), "| topic is:", s.Protocol(), s)
-	//i.Peers.Add(s.Conn().RemotePeer(), s, s.Conn().RemoteMultiaddr())
-
 	go i.ReceiveMessage(s)
 }
 
