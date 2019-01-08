@@ -93,12 +93,6 @@
 			"revisionTime": "2018-12-19T07:32:55Z"
 		},
 		{
-			"checksumSHA1": "SoWqqxYxcFb0RclvPZkx45xnzeA=",
-			"path": "github.com/eager7/go/mlog",
-			"revision": "663c4cf3c47640be3aeb2dea51f8f0ccdb82574e",
-			"revisionTime": "2018-12-11T08:08:01Z"
-		},
-		{
 			"checksumSHA1": "LdDVI3nPPbnnnLAZc+AD1TOsvAA=",
 			"path": "github.com/fd/go-nat",
 			"revision": "dcaf50131e4810440bed2cbb6f7f32c4f4cc95dd",
@@ -1078,12 +1072,6 @@
 			"revisionTime": "2018-03-14T08:05:35Z"
 		},
 		{
-			"checksumSHA1": "vpQPH9MbyK6XztL4zDh+1K3S6sQ=",
-			"path": "github.com/prometheus/client_golang/api",
-			"revision": "82f5ff156b29e276022b1a958f7d385870fb9814",
-			"revisionTime": "2018-04-16T23:38:56Z"
-		},
-		{
 			"checksumSHA1": "2drTapCqc8no1amQrAVJSQu0a5Y=",
 			"path": "github.com/prometheus/client_golang/prometheus",
 			"revision": "82f5ff156b29e276022b1a958f7d385870fb9814",
@@ -1384,18 +1372,6 @@
 			"revisionTime": "2018-04-23T13:30:03Z"
 		},
 		{
-			"checksumSHA1": "Wi8l0KLgcMfcdGKgwQUgnflPaWs=",
-			"path": "golang.org/x/crypto/ed25519",
-			"revision": "b0697eccbea9adec5b7ba8008f4c33d98d733388",
-			"revisionTime": "2018-04-23T13:30:03Z"
-		},
-		{
-			"checksumSHA1": "0JTAFXPkankmWcZGQJGScLDiaN8=",
-			"path": "golang.org/x/crypto/ed25519/internal/edwards25519",
-			"revision": "b0697eccbea9adec5b7ba8008f4c33d98d733388",
-			"revisionTime": "2018-04-23T13:30:03Z"
-		},
-		{
 			"checksumSHA1": "naawyBpDY6x+Pf0xyUdWD3qu8Q0=",
 			"path": "golang.org/x/crypto/sha3",
 			"revision": "b0697eccbea9adec5b7ba8008f4c33d98d733388",
@@ -1670,12 +1646,6 @@
 			"path": "google.golang.org/genproto/protobuf/field_mask",
 			"revision": "51d0944304c3cbce4afe9e5247e21100037bff78",
 			"revisionTime": "2018-04-09T22:20:37Z"
-		},
-		{
-			"checksumSHA1": "G+sUW3pSzAPxWuYlNWhJodyQVTY=",
-			"path": "gopkg.in/urfave/cli.v1",
-			"revision": "cfb38830724cc34fedffe9a2a29fb54fa9169cd1",
-			"revisionTime": "2017-08-11T01:42:03Z"
 		},
 		{
 			"checksumSHA1": "3qx1s/G7sJ0wjWpW3bhLWuCFwTw=",
