@@ -6,16 +6,15 @@ import (
 	"github.com/eager7/go/elog"
 	"github.com/eager7/lib-p2p/common/errors"
 	"github.com/eager7/lib-p2p/message"
+	"github.com/gogo/protobuf/io"
+	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-crypto"
+	"github.com/libp2p/go-libp2p-host"
+	"github.com/libp2p/go-libp2p-net"
+	"github.com/libp2p/go-libp2p-peer"
+	"github.com/libp2p/go-libp2p-peerstore"
+	"github.com/multiformats/go-multiaddr"
 
-	"gx/ipfs/QmPjvxTpVH8qJyQDnxnsxF9kv9jezKD1kozz1hs3fCGsNh/go-libp2p-net"
-	"gx/ipfs/QmY51bqSM5XgxQZqsBrQcRkKTnCb8EKpJpR9K6Qax7Njco/go-libp2p"
-	"gx/ipfs/QmYAL9JsqVVPFWwM1ZzHNsofmTzRYQHJ2KqQaBmFJjJsNx/go-libp2p-connmgr"
-	"gx/ipfs/QmYmsdtJ3HsodkePE3eU3TsCaP2YvPZJ4LoXnNkDE5Tpt7/go-multiaddr"
-	"gx/ipfs/QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV/gogo-protobuf/io"
-	"gx/ipfs/QmZR2XWVVBCtbgBWnQhWk2xcQfaR3W8faQPriAiaaj7rsr/go-libp2p-peerstore"
-	"gx/ipfs/Qmb8T6YBBsjYsVGfrihQLfCJveczZnneSBqBKkYEBWDjge/go-libp2p-host"
-	"gx/ipfs/QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN/go-libp2p-peer"
-	"gx/ipfs/Qme1knMqwt1hKZbc1BmQFmnm9f36nyQGwXxPGVpVJ9rMK5/go-libp2p-crypto"
 	"strings"
 	"sync"
 	"time"
@@ -37,22 +36,18 @@ type Instance struct {
 	lock    sync.RWMutex
 }
 
-func New(ctx context.Context, b64Pri, address string) (*Instance, error) {
+func NewInstance(ctx context.Context, b64Pri, address string) (*Instance, error) {
 	i := new(Instance)
-	if err := i.initialize(ctx, b64Pri, address); err != nil {
-		return nil, err
-	}
-	return i, nil
-}
-
-func (i *Instance) initialize(ctx context.Context, b64Pri, address string) error {
 	i.Peers.Initialize()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 	i.ctx = ctx
 	i.Address = address
-	return i.initNetwork(b64Pri)
+	if err := i.initNetwork(b64Pri); err != nil {
+		return nil, err
+	}
+	return i, nil
 }
 
 func (i *Instance) initNetwork(b64Pri string) (err error) {
@@ -86,14 +81,6 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 
 	var options []libp2p.Option
 	options = append(options, libp2p.Identity(private))
-
-	period := time.Duration(20) * time.Second
-	grace, err := time.ParseDuration(period.String())
-	if err != nil {
-		return errors.New(err.Error())
-	}
-	mgr := connmgr.NewConnManager(600, 900, grace)
-	options = append(options, libp2p.ConnectionManager(mgr))
 
 	ps := peerstore.NewPeerstore()
 	if err := ps.AddPrivKey(i.ID, private); err != nil {
@@ -204,7 +191,9 @@ func (i *Instance) ReceiveMessage(s net.Stream) {
 		err := reader.ReadMsg(msg)
 		if err != nil {
 			log.Error("the peer ", s.Conn().RemotePeer().Pretty(), i.Host.Peerstore().Addrs(s.Conn().RemotePeer()), "is disconnected:", err)
-			s.Reset()
+			if err := s.Reset(); err != nil {
+				log.Error(err)
+			}
 			i.Peers.Del(s.Conn().RemotePeer())
 			return
 		}

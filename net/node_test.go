@@ -7,6 +7,7 @@ import (
 	"github.com/eager7/lib-p2p/common/utils"
 	"github.com/eager7/lib-p2p/message"
 	"github.com/eager7/lib-p2p/net"
+	"github.com/libp2p/go-libp2p-peer"
 	"os"
 	"testing"
 	"time"
@@ -20,7 +21,7 @@ const (
 )
 
 func TestNode1(t *testing.T) {
-	n, err := net.New(context.Background(), priKey1, "/ip4/0.0.0.0/tcp/9011")
+	n, err := net.NewInstance(context.Background(), priKey1, "/ip4/0.0.0.0/tcp/9011")
 	CheckErrorPanic(err)
 
 	fmt.Println("wait...")
@@ -33,7 +34,7 @@ func TestNode1(t *testing.T) {
 }
 
 func TestNode2(t *testing.T) {
-	n, err := net.New(context.Background(), priKey2, "/ip4/0.0.0.0/tcp/9012")
+	n, err := net.NewInstance(context.Background(), priKey2, "/ip4/0.0.0.0/tcp/9012")
 	CheckErrorPanic(err)
 
 	fmt.Println("wait...")
@@ -49,5 +50,21 @@ func CheckErrorPanic(err error) {
 	if err != nil {
 		elog.Log.Error(err)
 		os.Exit(-1)
+	}
+}
+
+func TestPeerMap_Iterator(t *testing.T) {
+	p := new(net.PeerMap)
+	p.Initialize()
+	p.Add(peer.ID("test1"), nil, nil)
+	p.Add(peer.ID("test2"), nil, nil)
+	p.Add(peer.ID("test3"), nil, nil)
+	p.Add(peer.ID("test4"), nil, nil)
+	p.Add(peer.ID("test5"), nil, nil)
+
+	fmt.Println(p)
+
+	for v := range p.Iterator() {
+		fmt.Println(v)
 	}
 }

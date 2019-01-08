@@ -3,6 +3,7 @@ package yamux
 import (
 	"bufio"
 	"fmt"
+	"github.com/eager7/go/elog"
 	"io"
 	"io/ioutil"
 	"log"
@@ -449,6 +450,7 @@ func (s *Session) recvLoop() error {
 	for {
 		// Read the header
 		if _, err := io.ReadFull(s.bufRead, hdr); err != nil {
+			elog.Log.Warn("123456789:", s.Addr().String(), "err:", err)
 			if err != io.EOF && !strings.Contains(err.Error(), "closed") && !strings.Contains(err.Error(), "reset by peer") {
 				s.logger.Printf("[ERR] yamux: Failed to read header: %v", err)
 			}

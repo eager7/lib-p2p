@@ -3,7 +3,9 @@ package swarm
 import (
 	"errors"
 	"fmt"
+	"time"
 	"sync"
+	"github.com/eager7/go/elog"
 
 	inet "gx/ipfs/QmPjvxTpVH8qJyQDnxnsxF9kv9jezKD1kozz1hs3fCGsNh/go-libp2p-net"
 	transport "gx/ipfs/QmW5LxJm2Yo3S7uVsfLM7NsJn2QnKbvZD7uYsZVYR7YViE/go-libp2p-transport"
@@ -94,6 +96,7 @@ func (c *Conn) start() {
 		for {
 			ts, err := c.conn.AcceptStream()
 			if err != nil {
+				elog.Log.Warn("c.conn.AcceptStream err:",time.Now().UnixNano(), err, c.RemotePeer().Pretty(), c.RemoteMultiaddr().String())
 				return
 			}
 			c.swarm.refs.Add(1)
