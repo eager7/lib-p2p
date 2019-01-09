@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"github.com/eager7/go/elog"
 	"github.com/eager7/lib-p2p/common/utils"
-	"github.com/eager7/lib-p2p/message"
 	"github.com/eager7/lib-p2p/net"
 	"github.com/libp2p/go-libp2p-peer"
 	"os"
 	"testing"
 	"time"
 )
-
+var bootstrap = []string{"/ip4/127.0.0.1/tcp/9011/ipfs/QmXnBzsJR8742fQh8wCQmQ4SkcZ2oWBXrZkrm3urgVZCPF", "/ip4/127.0.0.1/tcp/9012/ipfs/QmQYGvkKTSp9QawqrYTtRjkywNav3NAG4GrDJKho72BHfE"}
 const (
 	priKey1 = "CAAS4QQwggJdAgEAAoGBANqQleuG0BmzpttZ1lfkGmxyKILudJEFLgFcnguSllgdN+6GoeZmByZLoiioTTVgexmXcLGDUdHz5wREhaEo/cx2RwdaUZES6Lewzc82vkmPmp1HMQB3d5s45SMuwqDVSgfvlzdUOXu9629hTgDE//wlq47Kgk6aDCyuLA7jlLGzAgMBAAECgYB96Yukuu6Jz/hRJ6kWyx752K5D95GJth0xxaR68EDSlEqTjFYawC5gPnQ1zfdkx6dDL/5JFWj+de9hgwQkutOydDB8c6HVweTVBrPMB2qIwkWxqofSsHzELP6tF9SuS7tz0ZTmgzkXIcK69nQt/Jlwg+3ronTfkkXCs38sjqA1EQJBAP5xndgg/CPjwwbkF3uaLkz2OytGd445BhqUByK/Ptnz4w+IJ8xMg16uCgglTDIz9454Grc7DpPD3Q1c8XI9UTkCQQDb5ssLzJ0El1JHfo2DiWE1upcJXHlM10vpDL2XHi94eTIfzEj7VxqYMoyC9BJZnRUGMh7gAc9petOORZdiuxZLAkAl825WoTzaYYtiSL0T64BCbGuQ3dbROMInTrLtxNasDYttcqJ0/2iMw6qtYlrGFigzcMiTUdSvx4P+DUHaBzlJAkEAjp0cXBekUaDt3K4niwIiyFytrYWKqZoLgiYgIwyRjtlS96pePpscBU7rL9aou/OS+gSxX2ftIyRkZaWea4qYBwJBAMmHnCCfH87KQY+OwERJHb/z5g4skfLZLKBK1x2bMs2uI14Q5keDRTrb/B6cZzeKsViWK3hvFdXMq5Uc8i5uDyQ="
 	pubKey1 = "CAASogEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANqQleuG0BmzpttZ1lfkGmxyKILudJEFLgFcnguSllgdN+6GoeZmByZLoiioTTVgexmXcLGDUdHz5wREhaEo/cx2RwdaUZES6Lewzc82vkmPmp1HMQB3d5s45SMuwqDVSgfvlzdUOXu9629hTgDE//wlq47Kgk6aDCyuLA7jlLGzAgMBAAE="
@@ -23,12 +22,13 @@ const (
 func TestNode1(t *testing.T) {
 	n, err := net.NewInstance(context.Background(), priKey1, "/ip4/0.0.0.0/tcp/9011")
 	CheckErrorPanic(err)
+	n.BootStrapInitialize(bootstrap...)
 
 	fmt.Println("wait...")
 	time.Sleep(time.Second * 3)
 
 	{
-		CheckErrorPanic(n.SendMessage(pubKey2, "0.0.0.0", "9012", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", 9001))}))
+		//CheckErrorPanic(n.SendMessage(pubKey2, "0.0.0.0", "9012", &mpb.Message{Identify: mpb.Identify_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", 9001))}))
 	}
 	utils.Pause()
 }
@@ -36,12 +36,13 @@ func TestNode1(t *testing.T) {
 func TestNode2(t *testing.T) {
 	n, err := net.NewInstance(context.Background(), priKey2, "/ip4/0.0.0.0/tcp/9012")
 	CheckErrorPanic(err)
+	n.BootStrapInitialize(bootstrap...)
 
 	fmt.Println("wait...")
 	time.Sleep(time.Second * 3)
 
 	{
-		CheckErrorPanic(n.SendMessage(pubKey1, "0.0.0.0", "9011", &pnet.Message{Type: pnet.MsgType_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", 9002))}))
+		//CheckErrorPanic(n.SendMessage(pubKey1, "0.0.0.0", "9011", &mpb.Message{Identify: mpb.Identify_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", 9002))}))
 	}
 	utils.Pause()
 }

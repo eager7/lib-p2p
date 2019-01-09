@@ -46,7 +46,7 @@ func (p *PeerMap) Del(id peer.ID) {
 func (p *PeerMap) Get(id peer.ID) *Peer {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
-	if info, ok := p.Peers[id]; ok {
+	if info, ok := p.Peers[id]; ok && info.s != nil {
 		return &info
 	}
 	return nil
