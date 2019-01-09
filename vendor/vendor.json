@@ -519,6 +519,12 @@
 			"revisionTime": "2018-04-16T04:36:02Z"
 		},
 		{
+			"checksumSHA1": "BHKhqt+YccsNuRsE6nYSANZW/2w=",
+			"path": "github.com/libp2p/go-libp2p-kbucket",
+			"revision": "513ceb0e6198c6911614fc32f24ea326fd064d67",
+			"revisionTime": "2018-12-18T22:38:30Z"
+		},
+		{
 			"checksumSHA1": "GJnX70HNE3+bp0rzhE2Dd9qcpRc=",
 			"path": "github.com/libp2p/go-libp2p-loggables",
 			"revision": "3a7ad4dd32462b4d9c07a85021e0f5e1110debb2",
