@@ -29,7 +29,7 @@ type BootStrap struct {
 	bsPeers []ipfsaddr.IPFSAddr
 }
 
-func (i *Instance) BootStrapInitialize(bsAddress... string) *BootStrap {
+func (i *Instance) BootStrapInitialize(bsAddress ...string) *BootStrap {
 	var bsPeers []ipfsaddr.IPFSAddr
 	for _, addr := range bsAddress {
 		if bsPeer, err := ipfsaddr.ParseString(addr); err != nil {
@@ -57,7 +57,8 @@ func (i *Instance) BootStrapInitialize(bsAddress... string) *BootStrap {
 	process.Go(periodic)
 	doneWithRound <- struct{}{}
 	close(doneWithRound)
-	return &BootStrap{closer: process, bsPeers: bsPeers}
+	i.BootStrap = &BootStrap{closer: process, bsPeers: bsPeers}
+	return i.BootStrap
 }
 
 func (i *Instance) bootStrapConnect(ctx context.Context, bsPeers []ipfsaddr.IPFSAddr, numToDial int) error {

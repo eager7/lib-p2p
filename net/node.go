@@ -16,7 +16,6 @@ import (
 	"github.com/multiformats/go-multiaddr"
 
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -28,12 +27,13 @@ const (
 )
 
 type Instance struct {
-	ctx       context.Context
-	Host      host.Host
-	ID        peer.ID
-	Address   []string
-	SenderMap PeerMap
-	lock      sync.RWMutex
+	ctx        context.Context
+	Host       host.Host
+	ID         peer.ID
+	Address    []string
+	SenderMap  PeerMap
+	BootStrap  *BootStrap
+	RouteTable *RouteTable
 }
 
 func NewInstance(ctx context.Context, b64Pri string, address ...string) (*Instance, error) {
@@ -99,9 +99,11 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 
 	i.Host.SetStreamHandler(Protocol, func(stream net.Stream) {
 		log.Debug("receive stream from:", stream.Conn().RemotePeer().Pretty(), stream.Conn().RemoteMultiaddr(), "| topic is:", stream.Protocol())
+		i.RouteTable.RouteUpdate(stream.Conn().RemotePeer())
 		go i.receive(stream)
 	})
 	i.Host.Network().Notify(i)
+	i.RouteTable = RouteInitialize(i.Host)
 	listen, err := i.Host.Network().InterfaceListenAddresses()
 	if err != nil {
 		log.Error(err)
@@ -195,6 +197,7 @@ func (i *Instance) receive(s net.Stream) {
 		log.Info("receive msg:", msg.String())
 	}
 }
+
 /**
  *  @brief 建立和对端的连接，这个函数会调用Dial函数拨号，可以节省ConnectPeer函数执行时间，因为如果已经拨号成功，那么创建流时就不需要再次拨号，因此此函数可以作为ping函数使用，实时去刷新和节点间的连接
  *  @param b64Pub - the public key
