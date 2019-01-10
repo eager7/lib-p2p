@@ -69,30 +69,6 @@
 			"revisionTime": "2018-12-19T07:32:55Z"
 		},
 		{
-			"checksumSHA1": "5WXlQpsHKIO5fQY9vYIGD8lH0HE=",
-			"path": "github.com/eager7/lib-p2p/common/errors",
-			"revision": "a67fb907662fa21f21fcfee9dfd42fbbaa2c2d78",
-			"revisionTime": "2019-01-10T01:54:53Z"
-		},
-		{
-			"checksumSHA1": "pGdb2QeC7ods5nc/yvm5MSq2TZs=",
-			"path": "github.com/eager7/lib-p2p/common/utils",
-			"revision": "a67fb907662fa21f21fcfee9dfd42fbbaa2c2d78",
-			"revisionTime": "2019-01-10T01:54:53Z"
-		},
-		{
-			"checksumSHA1": "pC6XBFARz6KEpdaYz9O+BRVRBFY=",
-			"path": "github.com/eager7/lib-p2p/go-ipfs-addr",
-			"revision": "a67fb907662fa21f21fcfee9dfd42fbbaa2c2d78",
-			"revisionTime": "2019-01-10T01:54:53Z"
-		},
-		{
-			"checksumSHA1": "Ov54aBEU+DlCfQtMM0oJfZa5vNI=",
-			"path": "github.com/eager7/lib-p2p/message",
-			"revision": "a67fb907662fa21f21fcfee9dfd42fbbaa2c2d78",
-			"revisionTime": "2019-01-10T01:54:53Z"
-		},
-		{
 			"checksumSHA1": "LdDVI3nPPbnnnLAZc+AD1TOsvAA=",
 			"path": "github.com/fd/go-nat",
 			"revision": "dcaf50131e4810440bed2cbb6f7f32c4f4cc95dd",
@@ -1540,5 +1516,5 @@
 			"revisionTime": "2018-03-28T19:50:20Z"
 		}
 	],
-	"rootPath": "github.com/eager7/lib-p2p/net"
+	"rootPath": "github.com/eager7/lib-p2p"
 }
