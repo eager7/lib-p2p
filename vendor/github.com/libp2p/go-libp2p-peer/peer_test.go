@@ -154,6 +154,7 @@ func TestIDMatchesPrivateKey(t *testing.T) {
 }
 
 func TestPublicKeyExtraction(t *testing.T) {
+	t.Skip("disabled until libp2p/go-libp2p-crypto#51 is fixed")
 	// Happy path
 	_, originalPub, err := ic.GenerateEd25519Key(rand.Reader)
 	if err != nil {
@@ -196,11 +197,32 @@ func TestPublicKeyExtraction(t *testing.T) {
 		t.Fatal(err)
 	}
 	extractedRsaPub, err := rsaId.ExtractPublicKey()
-	if err != nil {
+	if err != ErrNoPublicKey {
 		t.Fatal(err)
 	}
 	if extractedRsaPub != nil {
 		t.Fatal("expected to fail to extract public key from rsa ID")
+	}
+}
+
+func TestValidate(t *testing.T) {
+	// Empty peer ID invalidates
+	err := ID("").Validate()
+	if err == nil {
+		t.Error("expected error")
+	} else if err != ErrEmptyPeerID {
+		t.Error("expected error message: " + ErrEmptyPeerID.Error())
+	}
+
+	// Non-empty peer ID validates
+	p, err := tu.RandPeerID()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = p.Validate()
+	if err != nil {
+		t.Error("expected nil, but found " + err.Error())
 	}
 }
 

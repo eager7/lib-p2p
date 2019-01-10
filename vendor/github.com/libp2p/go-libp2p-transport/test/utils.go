@@ -1,120 +1,44 @@
 package utils
 
 import (
-	"fmt"
-	"io"
+	"reflect"
+	"runtime"
 	"testing"
 
+	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
-func SubtestTransport(t *testing.T, ta, tb tpt.Transport, addr string) {
+var Subtests = []func(t *testing.T, ta, tb tpt.Transport, maddr ma.Multiaddr, peerA peer.ID){
+	SubtestProtocols,
+	SubtestBasic,
+	SubtestCancel,
+	SubtestPingPong,
+
+	// Stolen from the stream muxer test suite.
+	SubtestStress1Conn1Stream1Msg,
+	SubtestStress1Conn1Stream100Msg,
+	SubtestStress1Conn100Stream100Msg,
+	SubtestStress50Conn10Stream50Msg,
+	SubtestStress1Conn1000Stream10Msg,
+	SubtestStress1Conn100Stream100Msg10MB,
+	SubtestStreamOpenStress,
+	SubtestStreamReset,
+}
+
+func getFunctionName(i interface{}) string {
+	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+}
+
+func SubtestTransport(t *testing.T, ta, tb tpt.Transport, addr string, peerA peer.ID) {
 	maddr, err := ma.NewMultiaddr(addr)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	list, err := ta.Listen(maddr)
-	if err != nil {
-		t.Fatal(err)
+	for _, f := range Subtests {
+		t.Run(getFunctionName(f), func(t *testing.T) {
+			f(t, ta, tb, maddr, peerA)
+		})
 	}
-
-	dialer, err := tb.Dialer(list.Multiaddr())
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	accepted := make(chan tpt.Conn, 1)
-	errs := make(chan error, 1)
-	go func() {
-		b, err := list.Accept()
-		if err != nil {
-			errs <- err
-			return
-		}
-
-		accepted <- b
-	}()
-
-	a, err := dialer.Dial(list.Multiaddr())
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	var b tpt.Conn
-	select {
-	case b = <-accepted:
-	case err := <-errs:
-		t.Fatal(err)
-	}
-
-	defer a.Close()
-	defer b.Close()
-
-	err = checkDataTransfer(a, b)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-}
-
-func checkDataTransfer(a, b io.ReadWriter) error {
-	errs := make(chan error, 2)
-	data := []byte("this is some test data")
-
-	go func() {
-		n, err := a.Write(data)
-		if err != nil {
-			errs <- err
-			return
-		}
-
-		if n != len(data) {
-			errs <- fmt.Errorf("failed to write enough data (a->b)")
-			return
-		}
-
-		buf := make([]byte, len(data))
-		_, err = io.ReadFull(a, buf)
-		if err != nil {
-			errs <- err
-			return
-		}
-
-		errs <- nil
-	}()
-
-	go func() {
-		buf := make([]byte, len(data))
-		_, err := io.ReadFull(b, buf)
-		if err != nil {
-			errs <- err
-			return
-		}
-
-		n, err := b.Write(data)
-		if err != nil {
-			errs <- err
-			return
-		}
-
-		if n != len(data) {
-			errs <- fmt.Errorf("failed to write enough data (b->a)")
-			return
-		}
-
-		errs <- nil
-	}()
-
-	err := <-errs
-	if err != nil {
-		return err
-	}
-	err = <-errs
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

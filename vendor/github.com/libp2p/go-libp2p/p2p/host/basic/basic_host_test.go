@@ -8,11 +8,13 @@ import (
 	"testing"
 	"time"
 
+	testutil "github.com/libp2p/go-testutil"
+
 	host "github.com/libp2p/go-libp2p-host"
 	inet "github.com/libp2p/go-libp2p-net"
-	testutil "github.com/libp2p/go-libp2p-netutil"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
+	swarmt "github.com/libp2p/go-libp2p-swarm/testing"
 	ma "github.com/multiformats/go-multiaddr"
 	madns "github.com/multiformats/go-multiaddr-dns"
 )
@@ -20,8 +22,8 @@ import (
 func TestHostSimple(t *testing.T) {
 
 	ctx := context.Background()
-	h1 := New(testutil.GenSwarmNetwork(t, ctx))
-	h2 := New(testutil.GenSwarmNetwork(t, ctx))
+	h1 := New(swarmt.GenSwarm(t, ctx))
+	h2 := New(swarmt.GenSwarm(t, ctx))
 	defer h1.Close()
 	defer h2.Close()
 
@@ -74,21 +76,21 @@ func TestHostAddrsFactory(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	h := New(testutil.GenSwarmNetwork(t, ctx), AddrsFactory(addrsFactory))
+	h := New(swarmt.GenSwarm(t, ctx), AddrsFactory(addrsFactory))
 	defer h.Close()
 
 	addrs := h.Addrs()
 	if len(addrs) != 1 {
 		t.Fatalf("expected 1 addr, got %d", len(addrs))
 	}
-	if addrs[0] != maddr {
+	if !addrs[0].Equal(maddr) {
 		t.Fatalf("expected %s, got %s", maddr.String(), addrs[0].String())
 	}
 }
 
 func getHostPair(ctx context.Context, t *testing.T) (host.Host, host.Host) {
-	h1 := New(testutil.GenSwarmNetwork(t, ctx))
-	h2 := New(testutil.GenSwarmNetwork(t, ctx))
+	h1 := New(swarmt.GenSwarm(t, ctx))
+	h2 := New(swarmt.GenSwarm(t, ctx))
 
 	h2pi := h2.Peerstore().PeerInfo(h2.ID())
 	if err := h1.Connect(ctx, h2pi); err != nil {
@@ -193,8 +195,8 @@ func TestHostProtoPreknowledge(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	h1 := New(testutil.GenSwarmNetwork(t, ctx))
-	h2 := New(testutil.GenSwarmNetwork(t, ctx))
+	h1 := New(swarmt.GenSwarm(t, ctx))
+	h2 := New(swarmt.GenSwarm(t, ctx))
 
 	conn := make(chan protocol.ID)
 	handler := func(s inet.Stream) {
@@ -358,7 +360,7 @@ func TestAddrResolution(t *testing.T) {
 	}
 	resolver := &madns.Resolver{Backend: backend}
 
-	h := New(testutil.GenSwarmNetwork(t, ctx), resolver)
+	h := New(swarmt.GenSwarm(t, ctx), resolver)
 	defer h.Close()
 
 	pi, err := pstore.InfoFromP2pAddr(p2paddr1)

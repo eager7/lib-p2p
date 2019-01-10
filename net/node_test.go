@@ -34,9 +34,8 @@ func TestNode1(t *testing.T) {
 	fmt.Println("FindPeerStore:", n.RouteTable.FindPeerStore(id))
 	fmt.Println("FindNearestPeer:", n.RouteTable.FindNearestPeer(id))
 
-	{
-		//CheckErrorPanic(n.SendMessage(pubKey2, "0.0.0.0", "9012", &mpb.Message{Identify: mpb.Identify_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", 9001))}))
-	}
+	//CheckErrorPanic(n.SendMessage(pubKey2, "0.0.0.0", "9012", &mpb.Message{Identify: mpb.Identify_MSG_STRING, Payload: []byte(fmt.Sprintf("node1111111111:%d", 9001))}))
+
 	utils.Pause()
 }
 
@@ -48,9 +47,8 @@ func TestNode2(t *testing.T) {
 	fmt.Println("wait...")
 	time.Sleep(time.Second * 3)
 
-	{
-		//CheckErrorPanic(n.SendMessage(pubKey1, "0.0.0.0", "9011", &mpb.Message{Identify: mpb.Identify_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", 9002))}))
-	}
+	//CheckErrorPanic(n.SendMessage(pubKey1, "0.0.0.0", "9011", &mpb.Message{Identify: mpb.Identify_MSG_STRING, Payload: []byte(fmt.Sprintf("node222222222222:%d", 9002))}))
+
 	utils.Pause()
 }
 

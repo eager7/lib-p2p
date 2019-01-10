@@ -9,9 +9,21 @@
   "gxDependencies": [
     {
       "author": "whyrusleeping",
-      "hash": "QmXoz9o2PT3tEzf7hicegwex5UgVP54n3k82K7jrWFyN86",
+      "hash": "QmNgLg1NTw37iWbYPKcyK85YJ9Whs1MkPtJwhfqbNYAyKg",
       "name": "go-libp2p-net",
-      "version": "2.0.7"
+      "version": "3.0.22"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmY5Grm8pJdiSSVsYxx4uNRgweY72EmYwuSDbRnbFok3iY",
+      "name": "go-libp2p-peer",
+      "version": "3.0.0"
+    },
+    {
+      "author": "multiformats",
+      "hash": "QmNTCey11oxhb1AxDnQBRHtdhap6Ctud872NjAYPYYXPuc",
+      "name": "go-multiaddr",
+      "version": "1.4.0"
     }
   ],
   "gxVersion": "0.11.0",
@@ -19,6 +31,6 @@
   "license": "",
   "name": "go-libp2p-interface-connmgr",
   "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
-  "version": "0.0.8"
+  "version": "0.0.27"
 }
 

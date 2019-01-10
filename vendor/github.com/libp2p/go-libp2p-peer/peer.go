@@ -1,27 +1,22 @@
-// package peer implements an object used to represent peers in the ipfs network.
+// Package peer implements an object used to represent peers in the ipfs network.
 package peer
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
-	"strings"
 
-	logging "github.com/ipfs/go-log" // ID represents the identity of a peer.
 	ic "github.com/libp2p/go-libp2p-crypto"
 	b58 "github.com/mr-tron/base58/base58"
 	mh "github.com/multiformats/go-multihash"
 )
 
-// MaxInlineKeyLength is the maximum length a key can be for it to be inlined in
-// the peer ID.
-//
-// * When `len(pubKey.Bytes()) <= MaxInlineKeyLength`, the peer ID is the
-//   identity multihash hash of the public key.
-// * When `len(pubKey.Bytes()) > MaxInlineKeyLength`, the peer ID is the
-//   sha2-256 multihash of the public key.
-const MaxInlineKeyLength = 42
-
-var log = logging.Logger("peer")
+var (
+	// ErrEmptyPeerID is an error for empty peer ID.
+	ErrEmptyPeerID = errors.New("empty peer ID")
+	// ErrNoPublickKey is an error for peer IDs that don't embed public keys
+	ErrNoPublicKey = errors.New("public key is not embedded in peer ID")
+)
 
 // ID is a libp2p peer identity.
 type ID string
@@ -31,6 +26,7 @@ func (id ID) Pretty() string {
 	return IDB58Encode(id)
 }
 
+// Loggable returns a pretty peerID string in loggable JSON format
 func (id ID) Loggable() map[string]interface{} {
 	return map[string]interface{}{
 		"peerID": id.Pretty(),
@@ -45,18 +41,10 @@ func (id ID) Loggable() map[string]interface{} {
 // codebase is known to be correct.
 func (id ID) String() string {
 	pid := id.Pretty()
-
-	//All sha256 nodes start with Qm
-	//We can skip the Qm to make the peer.ID more useful
-	if strings.HasPrefix(pid, "Qm") {
-		pid = pid[2:]
+	if len(pid) <= 10 {
+		return fmt.Sprintf("<peer.ID %s>", pid)
 	}
-
-	maxRunes := 6
-	if len(pid) < maxRunes {
-		maxRunes = len(pid)
-	}
-	return fmt.Sprintf("<peer.ID %s>", pid[:maxRunes])
+	return fmt.Sprintf("<peer.ID %s*%s>", pid[:2], pid[len(pid)-6:])
 }
 
 // MatchesPrivateKey tests whether this ID was derived from sk
@@ -75,7 +63,7 @@ func (id ID) MatchesPublicKey(pk ic.PubKey) bool {
 
 // ExtractPublicKey attempts to extract the public key from an ID
 //
-// This method returns nil, nil if the peer ID looks valid but it can't extract
+// This method returns ErrNoPublicKey if the peer ID looks valid but it can't extract
 // the public key.
 func (id ID) ExtractPublicKey() (ic.PubKey, error) {
 	decoded, err := mh.Decode([]byte(id))
@@ -83,13 +71,22 @@ func (id ID) ExtractPublicKey() (ic.PubKey, error) {
 		return nil, err
 	}
 	if decoded.Code != mh.ID {
-		return nil, nil
+		return nil, ErrNoPublicKey
 	}
 	pk, err := ic.UnmarshalPublicKey(decoded.Digest)
 	if err != nil {
 		return nil, err
 	}
 	return pk, nil
+}
+
+// Validate check if ID is empty or not
+func (id ID) Validate() error {
+	if id == ID("") {
+		return ErrEmptyPeerID
+	}
+
+	return nil
 }
 
 // IDFromString cast a string to ID type, and validate
@@ -144,11 +141,7 @@ func IDFromPublicKey(pk ic.PubKey) (ID, error) {
 	if err != nil {
 		return "", err
 	}
-	var alg uint64 = mh.SHA2_256
-	if len(b) <= MaxInlineKeyLength {
-		alg = mh.ID
-	}
-	hash, _ := mh.Sum(b, alg, -1)
+	hash, _ := mh.Sum(b, mh.SHA2_256, -1)
 	return ID(hash), nil
 }
 

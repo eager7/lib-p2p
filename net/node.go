@@ -82,6 +82,7 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 	var options []libp2p.Option
 	options = append(options, libp2p.Identity(private))
 
+	libp2p.ConnectionManager()
 	ps := peerstore.NewPeerstore()
 	if err := ps.AddPrivKey(i.ID, private); err != nil {
 		return errors.New(err.Error())

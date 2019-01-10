@@ -13,7 +13,8 @@ import (
 
 	bhost "github.com/libp2p/go-libp2p-blankhost"
 	host "github.com/libp2p/go-libp2p-host"
-	netutil "github.com/libp2p/go-libp2p-netutil"
+	swarm "github.com/libp2p/go-libp2p-swarm"
+	swarmt "github.com/libp2p/go-libp2p-swarm/testing"
 	ma "github.com/multiformats/go-multiaddr"
 )
 
@@ -30,12 +31,20 @@ func getNetHosts(t *testing.T, ctx context.Context, n int) []host.Host {
 	var out []host.Host
 
 	for i := 0; i < n; i++ {
-		netw := netutil.GenSwarmNetwork(t, ctx)
+		netw := swarmt.GenSwarm(t, ctx)
 		h := bhost.NewBlankHost(netw)
 		out = append(out, h)
 	}
 
 	return out
+}
+
+func newTestRelay(t *testing.T, ctx context.Context, host host.Host, opts ...RelayOpt) *Relay {
+	r, err := NewRelay(ctx, host, swarmt.GenUpgrader(host.Network().(*swarm.Swarm)), opts...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return r
 }
 
 func connect(t *testing.T, a, b host.Host) {
@@ -57,20 +66,11 @@ func TestBasicRelay(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0], OptDiscovery)
 
-	_, err = NewRelay(ctx, hosts[1], OptHop)
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[1], OptHop)
 
-	r3, err := NewRelay(ctx, hosts[2])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r3 := newTestRelay(t, ctx, hosts[2])
 
 	msg := []byte("relay works!")
 	go func() {
@@ -122,20 +122,11 @@ func TestRelayReset(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0], OptDiscovery)
 
-	_, err = NewRelay(ctx, hosts[1], OptHop)
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[1], OptHop)
 
-	r3, err := NewRelay(ctx, hosts[2])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r3 := newTestRelay(t, ctx, hosts[2])
 
 	ready := make(chan struct{})
 
@@ -190,20 +181,10 @@ func TestBasicRelayDial(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0], OptDiscovery)
 
-	_, err = NewRelay(ctx, hosts[1], OptHop)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	r3, err := NewRelay(ctx, hosts[2])
-	if err != nil {
-		t.Fatal(err)
-	}
+	_ = newTestRelay(t, ctx, hosts[1], OptHop)
+	r3 := newTestRelay(t, ctx, hosts[2])
 
 	msg := []byte("relay works!")
 	go func() {
@@ -223,16 +204,12 @@ func TestBasicRelayDial(t *testing.T) {
 		con.Close()
 	}()
 
-	addr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s/p2p-circuit/ipfs/%s", hosts[1].ID().Pretty(), hosts[2].ID().Pretty()))
-	if err != nil {
-		t.Fatal(err)
-	}
+	addr := ma.StringCast(fmt.Sprintf("/ipfs/%s/p2p-circuit", hosts[1].ID().Pretty()))
 
 	rctx, rcancel := context.WithTimeout(ctx, time.Second)
 	defer rcancel()
 
-	d := r1.Dialer()
-	con, err := d.DialContext(rctx, addr)
+	con, err := r1.Dial(rctx, addr, hosts[2].ID())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -253,20 +230,11 @@ func TestUnspecificRelayDial(t *testing.T) {
 
 	hosts := getNetHosts(t, ctx, 3)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0], OptDiscovery)
 
-	_, err = NewRelay(ctx, hosts[1], OptHop)
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[1], OptHop)
 
-	r3, err := NewRelay(ctx, hosts[2])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r3 := newTestRelay(t, ctx, hosts[2])
 
 	connect(t, hosts[0], hosts[1])
 	connect(t, hosts[1], hosts[2])
@@ -291,16 +259,12 @@ func TestUnspecificRelayDial(t *testing.T) {
 		con.Close()
 	}()
 
-	addr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p-circuit/ipfs/%s", hosts[2].ID().Pretty()))
-	if err != nil {
-		t.Fatal(err)
-	}
+	addr := ma.StringCast(fmt.Sprintf("/p2p-circuit"))
 
 	rctx, rcancel := context.WithTimeout(ctx, time.Second)
 	defer rcancel()
 
-	d := r1.Dialer()
-	con, err := d.DialContext(rctx, addr)
+	con, err := r1.Dial(rctx, addr, hosts[2].ID())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -326,20 +290,11 @@ func TestRelayThroughNonHop(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0], OptDiscovery)
 
-	_, err = NewRelay(ctx, hosts[1])
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[1])
 
-	_, err = NewRelay(ctx, hosts[2])
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[2])
 
 	rinfo := hosts[1].Peerstore().PeerInfo(hosts[1].ID())
 	dinfo := hosts[2].Peerstore().PeerInfo(hosts[2].ID())
@@ -347,7 +302,7 @@ func TestRelayThroughNonHop(t *testing.T) {
 	rctx, rcancel := context.WithTimeout(ctx, time.Second)
 	defer rcancel()
 
-	_, err = r1.DialPeer(rctx, rinfo, dinfo)
+	_, err := r1.DialPeer(rctx, rinfo, dinfo)
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -372,15 +327,9 @@ func TestRelayNoDestConnection(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0], OptDiscovery)
 
-	_, err = NewRelay(ctx, hosts[1], OptHop)
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[1], OptHop)
 
 	rinfo := hosts[1].Peerstore().PeerInfo(hosts[1].ID())
 	dinfo := hosts[2].Peerstore().PeerInfo(hosts[2].ID())
@@ -388,7 +337,7 @@ func TestRelayNoDestConnection(t *testing.T) {
 	rctx, rcancel := context.WithTimeout(ctx, time.Second)
 	defer rcancel()
 
-	_, err = r1.DialPeer(rctx, rinfo, dinfo)
+	_, err := r1.DialPeer(rctx, rinfo, dinfo)
 	if err == nil {
 		t.Fatal("expected error")
 	}
@@ -413,20 +362,11 @@ func TestActiveRelay(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0], OptDiscovery)
 
-	_, err = NewRelay(ctx, hosts[1], OptHop, OptActive)
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[1], OptHop, OptActive)
 
-	r3, err := NewRelay(ctx, hosts[2])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r3 := newTestRelay(t, ctx, hosts[2])
 
 	msg := []byte("relay works!")
 	go func() {
@@ -477,15 +417,9 @@ func TestRelayCanHop(t *testing.T) {
 
 	time.Sleep(10 * time.Millisecond)
 
-	r1, err := NewRelay(ctx, hosts[0])
-	if err != nil {
-		t.Fatal(err)
-	}
+	r1 := newTestRelay(t, ctx, hosts[0])
 
-	_, err = NewRelay(ctx, hosts[1], OptHop)
-	if err != nil {
-		t.Fatal(err)
-	}
+	newTestRelay(t, ctx, hosts[1], OptHop)
 
 	canhop, err := r1.CanHop(ctx, hosts[1].ID())
 	if err != nil {

@@ -441,34 +441,34 @@
 			"revisionTime": "2016-08-26T01:27:19Z"
 		},
 		{
-			"checksumSHA1": "+Nwvwq2TT4oGiIVVCBp9fhz3tik=",
+			"checksumSHA1": "nrUxY+lP5tKWlW19PpgNFTNA130=",
 			"path": "github.com/libp2p/go-addr-util",
-			"revision": "3bd34419494fb7f15182ddd19a5d92ac017a27c6",
-			"revisionTime": "2018-04-16T04:35:52Z"
+			"revision": "43abb5c200b95256f03ad9d8e19a677e0d10027d",
+			"revisionTime": "2018-12-18T18:38:30Z"
 		},
 		{
-			"checksumSHA1": "H7KQHLJwd69yFwPuI0sWIVV14e0=",
+			"checksumSHA1": "fo1p0+Aj33PTxm23keFRSL/XfmE=",
 			"path": "github.com/libp2p/go-flow-metrics",
-			"revision": "3b3bcfcf78f2dc0e85be13ef3c3adc64cc5a9347",
-			"revisionTime": "2017-12-27T17:04:45Z"
+			"revision": "7e5a55af485341567f98d6847a373eb5ddcdcd43",
+			"revisionTime": "2018-09-06T18:27:56Z"
 		},
 		{
-			"checksumSHA1": "RPK+LNVsQG51X3IqSFiVRJv9XcA=",
+			"checksumSHA1": "Qd42HDH7sImzwHo+kunvPslWOnQ=",
 			"path": "github.com/libp2p/go-libp2p",
-			"revision": "3b8f2275a2b24de5777aaa4fc77f1af57c5c4387",
-			"revisionTime": "2018-04-16T04:42:17Z"
+			"revision": "4b70d71c1d34baef38817c4c0ddf92e20a076891",
+			"revisionTime": "2018-12-21T19:47:34Z"
 		},
 		{
-			"checksumSHA1": "UVhdmPLiWGMr526xEAN9Gu6FeWo=",
+			"checksumSHA1": "cUHbXqcl341jHwK2q1eydYVjJc8=",
 			"path": "github.com/libp2p/go-libp2p-circuit",
-			"revision": "772fa57b88017ff6bce887a8d1486b228cacf488",
-			"revisionTime": "2018-04-16T04:35:59Z"
+			"revision": "5a7b5c75c0c18beb48943e557d9d993d9e04cb7a",
+			"revisionTime": "2018-12-19T09:17:24Z"
 		},
 		{
-			"checksumSHA1": "yvMgLjJFckLlt3aEe0yvfXP5upk=",
+			"checksumSHA1": "De4p3d5xsIbaYrd1hofdy9nzfG8=",
 			"path": "github.com/libp2p/go-libp2p-circuit/pb",
-			"revision": "772fa57b88017ff6bce887a8d1486b228cacf488",
-			"revisionTime": "2018-04-16T04:35:59Z"
+			"revision": "5a7b5c75c0c18beb48943e557d9d993d9e04cb7a",
+			"revisionTime": "2018-12-19T09:17:24Z"
 		},
 		{
 			"checksumSHA1": "DBv/m8guDBbZZowfvbc2L8Dg8Eg=",
@@ -477,28 +477,28 @@
 			"revisionTime": "2018-04-16T04:36:00Z"
 		},
 		{
-			"checksumSHA1": "NEvJ2SkkG8Cl5DzkoQ4faOfHl44=",
+			"checksumSHA1": "u7aof7rYCzih7JNulL4e5RTaTUM=",
 			"path": "github.com/libp2p/go-libp2p-crypto",
-			"revision": "18915b5467c77ad8c07a35328c2cab468667a4e8",
-			"revisionTime": "2018-03-18T23:46:59Z"
+			"revision": "b150863d61f797673433ab9e578c6eaf6ee985a1",
+			"revisionTime": "2018-11-30T16:27:22Z"
 		},
 		{
-			"checksumSHA1": "p58EbrGYdgxUchiHd7eHvWpVoGg=",
+			"checksumSHA1": "+bSXRPdmVcxmy8l6q6kYTR6/46I=",
 			"path": "github.com/libp2p/go-libp2p-crypto/pb",
-			"revision": "18915b5467c77ad8c07a35328c2cab468667a4e8",
-			"revisionTime": "2018-03-18T23:46:59Z"
+			"revision": "b150863d61f797673433ab9e578c6eaf6ee985a1",
+			"revisionTime": "2018-11-30T16:27:22Z"
 		},
 		{
 			"checksumSHA1": "ziJ6uPOyjJZUPg5V03w5fTg4Pe4=",
 			"path": "github.com/libp2p/go-libp2p-crypto/test",
-			"revision": "18915b5467c77ad8c07a35328c2cab468667a4e8",
-			"revisionTime": "2018-03-18T23:46:59Z"
+			"revision": "b150863d61f797673433ab9e578c6eaf6ee985a1",
+			"revisionTime": "2018-11-30T16:27:22Z"
 		},
 		{
-			"checksumSHA1": "lsj43soIesZY0h7kbgZvIDlLyIc=",
+			"checksumSHA1": "Nqfi8nbHksw+h4q+JGi/xFd1OHA=",
 			"path": "github.com/libp2p/go-libp2p-host",
-			"revision": "acf01b322989cf731f66ce70b1ed7c41fe007798",
-			"revisionTime": "2018-04-16T04:36:00Z"
+			"revision": "f316f1b980f9454f01bb1218e067c07182a4863c",
+			"revisionTime": "2018-12-18T18:12:19Z"
 		},
 		{
 			"checksumSHA1": "o7k6G2Q3IUvKQftFuwJw4uTMLBs=",
@@ -507,16 +507,16 @@
 			"revisionTime": "2018-04-16T04:36:01Z"
 		},
 		{
-			"checksumSHA1": "NKAi2dwaDhKFxzPjNv208EcoBYQ=",
+			"checksumSHA1": "5P4uc43v22qesAoNwAn/s7x6jPQ=",
 			"path": "github.com/libp2p/go-libp2p-interface-connmgr",
-			"revision": "d00fbee4d35c7b5fdbd12499f673a236c6303865",
-			"revisionTime": "2018-04-16T04:36:01Z"
+			"revision": "8ffd808001af4f23d21610c4b78dd3faeca15e39",
+			"revisionTime": "2018-12-18T18:09:32Z"
 		},
 		{
-			"checksumSHA1": "131x3z1RQ5+W8DLeLp1uBJBI8yU=",
+			"checksumSHA1": "iF0ouRaAOPqtrz0twm+PRfbH8/I=",
 			"path": "github.com/libp2p/go-libp2p-interface-pnet",
-			"revision": "c6acc383ec0b7b98112971df590d6702885ca821",
-			"revisionTime": "2018-04-16T04:36:02Z"
+			"revision": "d240acf619f63dfb776821a1d4d28a918f77edd5",
+			"revisionTime": "2018-09-19T00:05:01Z"
 		},
 		{
 			"checksumSHA1": "BHKhqt+YccsNuRsE6nYSANZW/2w=",
@@ -525,16 +525,16 @@
 			"revisionTime": "2018-12-18T22:38:30Z"
 		},
 		{
-			"checksumSHA1": "GJnX70HNE3+bp0rzhE2Dd9qcpRc=",
+			"checksumSHA1": "ke+1TGtuTJQ/FYPGrSL/Tz/afag=",
 			"path": "github.com/libp2p/go-libp2p-loggables",
-			"revision": "3a7ad4dd32462b4d9c07a85021e0f5e1110debb2",
-			"revisionTime": "2018-04-16T04:36:03Z"
+			"revision": "df759ca6eaccf09defe57fcf41afb0af19525014",
+			"revisionTime": "2018-12-18T19:16:01Z"
 		},
 		{
-			"checksumSHA1": "kCWJiSXrFaKTQSot89wnkNwfPFQ=",
+			"checksumSHA1": "TdqSTyAerUBQ/ymfKczGkzOiTBU=",
 			"path": "github.com/libp2p/go-libp2p-metrics",
-			"revision": "2b4a2757a26649c9a603519647cc9d4478ade5c6",
-			"revisionTime": "2018-04-16T04:36:03Z"
+			"revision": "623fc2e95e2bd3143caa442b03121b60cc45b76d",
+			"revisionTime": "2018-12-07T22:34:46Z"
 		},
 		{
 			"checksumSHA1": "+A4xMWPnTtaW+5u/ZK/bG1BxLdU=",
@@ -549,16 +549,16 @@
 			"revisionTime": "2018-04-16T04:36:03Z"
 		},
 		{
-			"checksumSHA1": "83Pcby4ZPb0H8EhM+ST2mYy+quM=",
+			"checksumSHA1": "0M6QCXpFTwEEpKxBmOUuq5+YDpY=",
 			"path": "github.com/libp2p/go-libp2p-nat",
-			"revision": "d090f00e553d1b6582e1ec829608a8a9bbf262e1",
-			"revisionTime": "2018-04-16T04:36:04Z"
+			"revision": "99e3f5355bcd92ba7c9708670a47207f377cfd26",
+			"revisionTime": "2018-12-18T19:18:11Z"
 		},
 		{
-			"checksumSHA1": "ob0VFSuEqIjWYx+sX5egFhmGx4U=",
+			"checksumSHA1": "zmlnhPn4Gt/FftwIk0Jcu/RkelA=",
 			"path": "github.com/libp2p/go-libp2p-net",
-			"revision": "70a8d93f2d8c33b5c1a5f6cc4d2aea21663a264c",
-			"revisionTime": "2018-04-16T04:36:04Z"
+			"revision": "58e96baf5d7e630201e3f18062a1e8ced63aa9ac",
+			"revisionTime": "2018-12-18T17:37:01Z"
 		},
 		{
 			"checksumSHA1": "lQF0Gej9yPX36zAJbgRCCeKdMpg=",
@@ -567,28 +567,28 @@
 			"revisionTime": "2018-12-18T18:43:32Z"
 		},
 		{
-			"checksumSHA1": "Sr7WjE+N3MV5JJ63hh9bQ+wP+G0=",
+			"checksumSHA1": "aRzzXNEmtK8qgme5+s40y3vrSMc=",
 			"path": "github.com/libp2p/go-libp2p-peer",
-			"revision": "aa0e03e559bde9d4749ad8e38595e15a6fe808fa",
-			"revisionTime": "2018-04-16T04:36:06Z"
+			"revision": "f5c52cebf45bb99d2b871cec48dd3ad6e2edaa11",
+			"revisionTime": "2018-12-12T19:57:32Z"
 		},
 		{
 			"checksumSHA1": "7Nsu/AHWMDsH3tCSnfLI06KU+VI=",
 			"path": "github.com/libp2p/go-libp2p-peer/test",
-			"revision": "aa0e03e559bde9d4749ad8e38595e15a6fe808fa",
-			"revisionTime": "2018-04-16T04:36:06Z"
+			"revision": "f5c52cebf45bb99d2b871cec48dd3ad6e2edaa11",
+			"revisionTime": "2018-12-12T19:57:32Z"
 		},
 		{
-			"checksumSHA1": "lp/Enb/1ZTnY65ACv6EPPk9pXd8=",
+			"checksumSHA1": "vzY4u9Z9wByS/KMdLkWsZ0yV3Ks=",
 			"path": "github.com/libp2p/go-libp2p-peerstore",
-			"revision": "7ac092e7f77f5bda1cb6e4ef95efbe911e97db41",
-			"revisionTime": "2018-04-16T04:36:07Z"
+			"revision": "99108065a0f625eebc2bf7ad235edacd56d0c83a",
+			"revisionTime": "2018-12-18T17:34:47Z"
 		},
 		{
 			"checksumSHA1": "6MYCYWIU938A/kZzx46pGnbvRgQ=",
 			"path": "github.com/libp2p/go-libp2p-peerstore/addr",
-			"revision": "7ac092e7f77f5bda1cb6e4ef95efbe911e97db41",
-			"revisionTime": "2018-04-16T04:36:07Z"
+			"revision": "99108065a0f625eebc2bf7ad235edacd56d0c83a",
+			"revisionTime": "2018-12-18T17:34:47Z"
 		},
 		{
 			"checksumSHA1": "KWevKbYDWLuqqHQzHt+ckpp+DHM=",
@@ -597,64 +597,64 @@
 			"revisionTime": "2017-12-12T21:21:32Z"
 		},
 		{
-			"checksumSHA1": "nhyl5AeSYyMTxUo2VLJ5rZ/Y+GI=",
+			"checksumSHA1": "upiYOA9EPj78mQDOBEYG7YRIOyA=",
 			"path": "github.com/libp2p/go-libp2p-secio",
-			"revision": "146b7055645501f741c5644d4a3d207614f08899",
-			"revisionTime": "2018-04-16T04:36:07Z"
+			"revision": "688e663480013b5758a1b29a0e31b2cc090ed5df",
+			"revisionTime": "2018-12-18T17:48:21Z"
 		},
 		{
-			"checksumSHA1": "bGeSe5+CMIo3H2tiyHTADM+Dq1o=",
+			"checksumSHA1": "e4BG7x8K2aNnmTEzV6kmeORt27g=",
 			"path": "github.com/libp2p/go-libp2p-secio/pb",
-			"revision": "146b7055645501f741c5644d4a3d207614f08899",
-			"revisionTime": "2018-04-16T04:36:07Z"
+			"revision": "688e663480013b5758a1b29a0e31b2cc090ed5df",
+			"revisionTime": "2018-12-18T17:48:21Z"
 		},
 		{
-			"checksumSHA1": "MQUCr4M8wujuZRPkoHC7jKkPZr0=",
+			"checksumSHA1": "3dVxNBa+RgUsbb8MiDleQt9Sqrk=",
 			"path": "github.com/libp2p/go-libp2p-swarm",
-			"revision": "48d6d0ff2d2a4724f6b47f1ed5ffc0ae63e30460",
-			"revisionTime": "2018-04-16T04:36:08Z"
+			"revision": "f056f38c6c494cb0a4ee29d807d9e73aab1f2268",
+			"revisionTime": "2018-12-18T18:54:45Z"
 		},
 		{
-			"checksumSHA1": "pk2pvy4OKt4E4aMgJAMItxFmte8=",
+			"checksumSHA1": "XyswsxYTTXppeSMRl0c4JCe5emI=",
 			"path": "github.com/libp2p/go-libp2p-transport",
-			"revision": "49533464477a869fee537c8cc3fcee286aa8bdcd",
-			"revisionTime": "2018-04-16T04:36:08Z"
+			"revision": "6846161212a6cf284dc25443db8c1aab6d7f805c",
+			"revisionTime": "2018-12-18T17:45:30Z"
 		},
 		{
-			"checksumSHA1": "7UDQrTBzRK1xflitR+beNSdbte0=",
+			"checksumSHA1": "LH6xlNmlxdD6jtzrGl4gkd/E0hY=",
 			"path": "github.com/libp2p/go-libp2p-transport/test",
-			"revision": "49533464477a869fee537c8cc3fcee286aa8bdcd",
-			"revisionTime": "2018-04-16T04:36:08Z"
+			"revision": "6846161212a6cf284dc25443db8c1aab6d7f805c",
+			"revisionTime": "2018-12-18T17:45:30Z"
 		},
 		{
-			"checksumSHA1": "BTfGQyBjMP/hym73flVNUzWq/xQ=",
+			"checksumSHA1": "zoIjYir6qjNOdM6dlez43leLjJ0=",
 			"path": "github.com/libp2p/go-libp2p/p2p/host/basic",
-			"revision": "3b8f2275a2b24de5777aaa4fc77f1af57c5c4387",
-			"revisionTime": "2018-04-16T04:42:17Z"
+			"revision": "4b70d71c1d34baef38817c4c0ddf92e20a076891",
+			"revisionTime": "2018-12-21T19:47:34Z"
 		},
 		{
-			"checksumSHA1": "mX4dg05dHH7zkLBabLjkCgPnqTY=",
+			"checksumSHA1": "R8I6sJvV+iVYP+NzQVVxkmT+jhk=",
 			"path": "github.com/libp2p/go-libp2p/p2p/protocol/identify",
-			"revision": "3b8f2275a2b24de5777aaa4fc77f1af57c5c4387",
-			"revisionTime": "2018-04-16T04:42:17Z"
+			"revision": "4b70d71c1d34baef38817c4c0ddf92e20a076891",
+			"revisionTime": "2018-12-21T19:47:34Z"
 		},
 		{
-			"checksumSHA1": "0at4iN2d9Yn2aE4u/0cKQfDJPRE=",
+			"checksumSHA1": "i/4Fgd5LeguFHDkdqwdS6KXa0Wg=",
 			"path": "github.com/libp2p/go-libp2p/p2p/protocol/identify/pb",
-			"revision": "3b8f2275a2b24de5777aaa4fc77f1af57c5c4387",
-			"revisionTime": "2018-04-16T04:42:17Z"
+			"revision": "4b70d71c1d34baef38817c4c0ddf92e20a076891",
+			"revisionTime": "2018-12-21T19:47:34Z"
 		},
 		{
-			"checksumSHA1": "WprhSAgM2KrCmAFgWzG1LypoSPM=",
+			"checksumSHA1": "CwEa1aK7mx7pyIQWV/NGio/GchQ=",
 			"path": "github.com/libp2p/go-maddr-filter",
-			"revision": "3c9947befbb92277cc5f85057d387097debc4139",
-			"revisionTime": "2018-01-20T04:51:30Z"
+			"revision": "666a1351c131174d1d4686d4bb2b2b48c87fd1fa",
+			"revisionTime": "2018-12-24T01:41:15Z"
 		},
 		{
-			"checksumSHA1": "S2DIr6TyrC2aweAsaaFaouici5k=",
+			"checksumSHA1": "i2j8+sT/LV+3w4Y9c72lMR4LPXk=",
 			"path": "github.com/libp2p/go-msgio",
-			"revision": "d82125c9907e1365775356505f14277d47dfd4d6",
-			"revisionTime": "2017-12-11T22:05:09Z"
+			"revision": "031a413e66129d593337a3f5948d9364e7fc6d43",
+			"revisionTime": "2018-10-10T10:29:32Z"
 		},
 		{
 			"checksumSHA1": "eHFUB3gAYZbVOxlYOn9g7TurV7k=",
@@ -669,46 +669,46 @@
 			"revisionTime": "2018-04-16T04:36:09Z"
 		},
 		{
-			"checksumSHA1": "BUmkeFAFH73hqTAVeCguOOY2B48=",
+			"checksumSHA1": "1bdtJPpiQcVq0cbD2e5DwVRot2Y=",
 			"path": "github.com/libp2p/go-reuseport",
-			"revision": "15a1cd37f0502f3b2eccb6d71a7958edda314633",
-			"revisionTime": "2018-04-16T04:36:09Z"
+			"revision": "fb50c9fb705a711a63f702cb579d05a4acff0105",
+			"revisionTime": "2018-12-31T11:39:40Z"
 		},
 		{
-			"checksumSHA1": "+PE3YG5fuc8Qm3RAIuZVvL1RE1U=",
+			"checksumSHA1": "OzKzE5AMph8basCqt+8dUepiS1Q=",
 			"path": "github.com/libp2p/go-reuseport/poll",
-			"revision": "15a1cd37f0502f3b2eccb6d71a7958edda314633",
-			"revisionTime": "2018-04-16T04:36:09Z"
+			"revision": "fb50c9fb705a711a63f702cb579d05a4acff0105",
+			"revisionTime": "2018-12-31T11:39:40Z"
 		},
 		{
 			"checksumSHA1": "5SWM6S/ksWO2egmaQOv8MAluYnQ=",
 			"path": "github.com/libp2p/go-reuseport/singlepoll",
-			"revision": "15a1cd37f0502f3b2eccb6d71a7958edda314633",
-			"revisionTime": "2018-04-16T04:36:09Z"
+			"revision": "fb50c9fb705a711a63f702cb579d05a4acff0105",
+			"revisionTime": "2018-12-31T11:39:40Z"
 		},
 		{
-			"checksumSHA1": "krP315u6CG2x0rJUauSQ+9OSICk=",
+			"checksumSHA1": "DW8KmgTi3z+LpGrOlw55kXtLJBY=",
 			"path": "github.com/libp2p/go-sockaddr/net",
-			"revision": "f3e9f73a53d14d8257cb9da3d83dda07bbd8b2fe",
-			"revisionTime": "2018-03-29T07:05:16Z"
+			"revision": "a7494d4eefeb607c8bc491cf8850a6e8dbd41cab",
+			"revisionTime": "2018-09-04T17:19:32Z"
 		},
 		{
-			"checksumSHA1": "GDZcUxdDQ8DUwXK/fvjwnrb2gH4=",
+			"checksumSHA1": "qN5RIs8/gJBVhinNcc9KEhcy72Q=",
 			"path": "github.com/libp2p/go-stream-muxer",
-			"revision": "6ebe3f58af097068454b167a89442050b023b571",
-			"revisionTime": "2017-09-11T00:43:14Z"
+			"revision": "9c6bd93eecbbab56630bb2688bb435d9fd1dfeb1",
+			"revisionTime": "2018-06-11T19:33:51Z"
 		},
 		{
-			"checksumSHA1": "YLr0X0jXEBHPuwAb8JOgPe4km/A=",
+			"checksumSHA1": "rF/H6zVxpNTTKnKqI6p0PhruwUY=",
 			"path": "github.com/libp2p/go-stream-muxer/test",
-			"revision": "6ebe3f58af097068454b167a89442050b023b571",
-			"revisionTime": "2017-09-11T00:43:14Z"
+			"revision": "9c6bd93eecbbab56630bb2688bb435d9fd1dfeb1",
+			"revisionTime": "2018-06-11T19:33:51Z"
 		},
 		{
-			"checksumSHA1": "Az210WvhNuaFOVlb1E/QgbeaTXk=",
+			"checksumSHA1": "Sd+ykLsSH1WxLF34brEamSp8krI=",
 			"path": "github.com/libp2p/go-tcp-transport",
-			"revision": "2852032418949429c7d683502e7ea9bff2e951e7",
-			"revisionTime": "2018-04-16T04:36:10Z"
+			"revision": "3dcae9c338897f3a13eaa03101df24d012a33281",
+			"revisionTime": "2018-12-18T18:23:40Z"
 		},
 		{
 			"checksumSHA1": "FQRgEn+73+/E7Z+wzf/kIUCL/Mk=",
@@ -729,10 +729,10 @@
 			"revisionTime": "2018-12-18T18:34:32Z"
 		},
 		{
-			"checksumSHA1": "A1lFLLuPvSJIQOSNPdcGSjBWCSM=",
+			"checksumSHA1": "oBrnJUm9hE+Jlcax7tIxRgwqGAY=",
 			"path": "github.com/libp2p/go-ws-transport",
-			"revision": "2c20090616127904f706139653cd40ecac600227",
-			"revisionTime": "2018-04-16T04:36:11Z"
+			"revision": "f07aa0147210685ff230c8c9f6ebb35f146973e5",
+			"revisionTime": "2018-12-18T19:11:40Z"
 		},
 		{
 			"checksumSHA1": "yFtLxOUdZfLWFd2waEjv8m4JyyM=",
