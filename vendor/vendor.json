@@ -477,6 +477,12 @@
 			"revisionTime": "2018-04-16T04:36:00Z"
 		},
 		{
+			"checksumSHA1": "qEX56HSGtG5JMSv8gREwAllrWew=",
+			"path": "github.com/libp2p/go-libp2p-connmgr",
+			"revision": "2ceda0b92b33dfbd6012750f95a3483ffd70ee0a",
+			"revisionTime": "2018-12-27T10:25:43Z"
+		},
+		{
 			"checksumSHA1": "u7aof7rYCzih7JNulL4e5RTaTUM=",
 			"path": "github.com/libp2p/go-libp2p-crypto",
 			"revision": "b150863d61f797673433ab9e578c6eaf6ee985a1",
@@ -587,6 +593,12 @@
 		{
 			"checksumSHA1": "6MYCYWIU938A/kZzx46pGnbvRgQ=",
 			"path": "github.com/libp2p/go-libp2p-peerstore/addr",
+			"revision": "99108065a0f625eebc2bf7ad235edacd56d0c83a",
+			"revisionTime": "2018-12-18T17:34:47Z"
+		},
+		{
+			"checksumSHA1": "BKuTfHI6kU2mqj6+d3we+lD9Oy8=",
+			"path": "github.com/libp2p/go-libp2p-peerstore/pstoremem",
 			"revision": "99108065a0f625eebc2bf7ad235edacd56d0c83a",
 			"revisionTime": "2018-12-18T17:34:47Z"
 		},

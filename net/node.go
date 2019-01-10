@@ -8,11 +8,13 @@ import (
 	"github.com/eager7/lib-p2p/message"
 	"github.com/gogo/protobuf/io"
 	"github.com/libp2p/go-libp2p"
+	"github.com/libp2p/go-libp2p-connmgr"
 	"github.com/libp2p/go-libp2p-crypto"
 	"github.com/libp2p/go-libp2p-host"
 	"github.com/libp2p/go-libp2p-net"
 	"github.com/libp2p/go-libp2p-peer"
 	"github.com/libp2p/go-libp2p-peerstore"
+	"github.com/libp2p/go-libp2p-peerstore/pstoremem"
 	"github.com/multiformats/go-multiaddr"
 
 	"strings"
@@ -82,8 +84,15 @@ func (i *Instance) initNetwork(b64Pri string) (err error) {
 	var options []libp2p.Option
 	options = append(options, libp2p.Identity(private))
 
-	libp2p.ConnectionManager()
-	ps := peerstore.NewPeerstore()
+	period := time.Duration(20) * time.Second
+	grace, err := time.ParseDuration(period.String())
+	if err != nil {
+		return errors.New(err.Error())
+	}
+	mgr := connmgr.NewConnManager(600, 900, grace)
+	options = append(options, libp2p.ConnectionManager(mgr))
+
+	ps := peerstore.NewPeerstore(pstoremem.NewKeyBook(), pstoremem.NewAddrBook(), pstoremem.NewPeerMetadata())
 	if err := ps.AddPrivKey(i.ID, private); err != nil {
 		return errors.New(err.Error())
 	}
